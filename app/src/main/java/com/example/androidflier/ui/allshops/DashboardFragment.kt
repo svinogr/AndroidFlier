@@ -1,4 +1,4 @@
-package com.example.androidflier.ui.dashboard
+package com.example.androidflier.ui.allshops
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,7 +8,6 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.example.androidflier.R
 import com.example.androidflier.databinding.FragmentDashboardBinding
 
 class DashboardFragment : Fragment() {

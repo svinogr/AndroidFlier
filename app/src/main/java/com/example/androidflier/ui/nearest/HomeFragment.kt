@@ -1,4 +1,4 @@
-package com.example.androidflier.ui.home
+package com.example.androidflier.ui.nearest
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.androidflier.R
+import com.example.androidflier.adapter.ShopCardAdapter
 import com.example.androidflier.databinding.FragmentHomeBinding
+import com.example.androidflier.model.Shop
 
 class HomeFragment : Fragment() {
 
@@ -31,11 +33,12 @@ class HomeFragment : Fragment() {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
-        return root
+        val list = listOf<Shop>(Shop(1, 10.0, 10.0, "Address", "descrip", "www", "url", "title"))
+        val recycler = inflater.inflate(R.layout.fragment_home,)
+
+
+        val adapter = ShopCardAdapter(list)
+        adapter.return root
     }
 
     override fun onDestroyView() {
