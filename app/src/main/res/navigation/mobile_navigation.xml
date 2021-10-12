@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.androidflier.ui.nearest.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:name="com.example.androidflier.ui.nearest.NearestFragment"
+        android:label="@string/title_nearest"
+        tools:layout="@layout/fragment_nearest" />
 
     <fragment
         android:id="@+id/navigation_dashboard"
         android:name="com.example.androidflier.ui.allshops.DashboardFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/title_all"
         tools:layout="@layout/fragment_dashboard" />
 
     <fragment
         android:id="@+id/navigation_notifications"
         android:name="com.example.androidflier.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/title_favorite"
         tools:layout="@layout/fragment_notifications" />
 </navigation>

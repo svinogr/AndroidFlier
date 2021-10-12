@@ -7,13 +7,16 @@ import com.example.androidflier.R
 import com.example.androidflier.model.Shop
 
 class ShopViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    var title: TextView
+    private var title: TextView
+    private var address: TextView
 
     init {
-        title = itemView.findViewById(R.id.shop_cardView_titleText)
+        title = itemView.findViewById(R.id.shop_cardView_title)
+        address = itemView.findViewById(R.id.shop_cardView_address)
     }
 
     fun bind(shop: Shop) {
         title.text = shop.title
+        address.text = shop.address
     }
 }

@@ -7,7 +7,7 @@ import com.example.androidflier.R
 import com.example.androidflier.adapter.holder.ShopViewHolder
 import com.example.androidflier.model.Shop
 
-class ShopCardAdapter(var listShops: List<Shop>) : RecyclerView.Adapter<ShopViewHolder>() {
+class ShopCardAdapter(var listShops: List<Shop> = mutableListOf()) : RecyclerView.Adapter<ShopViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopViewHolder {
         val inflate =

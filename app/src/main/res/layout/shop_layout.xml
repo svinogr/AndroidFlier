@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/shop_cardView"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="@dimen/cards_corner_radius"
+    android:layout_marginBottom="@dimen/cards_vertical_margin">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -20,23 +22,36 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:src="@color/black"
+            android:src="@drawable/ic_dashboard_black_24dp"
             android:contentDescription="@string/imgForShopCard" />
 
         <TextView
-            android:id="@+id/shop_cardView_titleText"
+            android:id="@+id/shop_cardView_title"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:textAlignment="viewStart"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center|top"
+          app:layout_constraintBottom_toTopOf="@id/shop_cardView_address"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/shop_cardView_imageView"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="название магазина ">
         </TextView>
+
+        <TextView
+            android:id="@+id/shop_cardView_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/shop_cardView_imageView"
+            app:layout_constraintTop_toBottomOf="@+id/shop_cardView_title"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:gravity="center|top"
+
+            tools:text="адрес магазина" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
