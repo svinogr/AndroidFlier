@@ -1,5 +1,26 @@
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/nearest_recycler_view"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constr"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
- />
+    tools:context="ui.nearest.NearestFragment">
+
+    <Button
+        android:id="@+id/btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="кнопка"
+        app:layout_constraintBottom_toTopOf="@id/nearest_recycler_view"
+        app:layout_constraintTop_toTopOf="@id/constr" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/nearest_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="-316dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
+
+

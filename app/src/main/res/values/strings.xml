@@ -4,4 +4,6 @@
     <string name="title_all">Все</string>
     <string name="title_favorite">Избранные</string>
     <string name="imgForShopCard">imgForShopCard</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

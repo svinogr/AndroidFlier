@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.androidflier.R
 import com.example.androidflier.databinding.FragmentNotificationsBinding
 
-class NotificationsFragment : Fragment() {
+class NotificationsFragment : Fragment(R.layout.fragment_notifications) {
 
     private lateinit var notificationsViewModel: NotificationsViewModel
     private var _binding: FragmentNotificationsBinding? = null

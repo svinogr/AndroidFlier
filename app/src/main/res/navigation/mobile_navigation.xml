@@ -9,7 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="com.example.androidflier.ui.nearest.NearestFragment"
         android:label="@string/title_nearest"
-        tools:layout="@layout/fragment_nearest" />
+        tools:layout="@layout/fragment_nearest" >
+        <action
+            android:id="@+id/action_navigation_home_to_shopDetailFragment"
+            app:destination="@id/shopDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
@@ -22,4 +26,9 @@
         android:name="com.example.androidflier.ui.notifications.NotificationsFragment"
         android:label="@string/title_favorite"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/shopDetailFragment"
+        android:name="com.example.androidflier.ui.shopdetail.ShopDetailFragment"
+        android:label="fragment_shop_detail"
+        tools:layout="@layout/fragment_shop_detail" />
 </navigation>
