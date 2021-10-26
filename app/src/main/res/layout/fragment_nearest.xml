@@ -6,20 +6,10 @@
     android:layout_height="match_parent"
     tools:context="ui.nearest.NearestFragment">
 
-    <Button
-        android:id="@+id/btn"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="кнопка"
-        app:layout_constraintBottom_toTopOf="@id/nearest_recycler_view"
-        app:layout_constraintTop_toTopOf="@id/constr" />
-
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/nearest_recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="-316dp" />
+        android:layout_height="match_parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

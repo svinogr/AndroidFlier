@@ -62,9 +62,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
             viewLifecycleOwner, shopObserver
         )
 
-        binding.btn.setOnClickListener(
-            this
-        )
+
 
         Log.i("ttttt", "cre")
 

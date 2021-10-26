@@ -51,8 +51,8 @@ class ShopRepository private constructor() {
 
     fun getShopById(id: Long): Shop {
         // TODO
-        val stocks = mutableListOf(Stock(1, "title1", "descr1"), Stock(2, "title2", "descr2"))
-        val shop = Shop(id, 10.00, 10.00, "adress", "descr", "www", "img", "title",  stocks)
+        val stocks = mutableListOf(Stock(1, "акция 1 в три строки или больше или в пять даже и может даже в шестнадцать", "описание 1"), Stock(2, "акция 2 в три строки или больше или в пять даже  и может даже в шестнадцать", "описание 2"))
+        val shop = Shop(id, 10.00, 10.00, "adress", "descr", "www", "img", "название магаза",  stocks)
         return shop
     }
 }

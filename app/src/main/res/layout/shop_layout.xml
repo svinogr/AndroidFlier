@@ -5,8 +5,8 @@
     android:id="@+id/shop_cardView"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="@dimen/cards_corner_radius"
-    android:layout_marginBottom="@dimen/cards_vertical_margin">
+    app:cardCornerRadius="@dimen/cards_shop_corner_radius"
+    android:layout_marginBottom="@dimen/cards_shop_margin_bottom">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,11 +14,11 @@
 
         <ImageView
             android:id="@+id/shop_cardView_imageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="@dimen/cards_shop_image_width"
+            android:layout_height="@dimen/cards_shop_image_height"
+            android:layout_marginStart="@dimen/cards_shop_image_margin_start"
+            android:layout_marginTop="@dimen/cards_shop_image_margin_top"
+            android:layout_marginBottom="@dimen/cards_shop_image_margin_bottom"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -29,10 +29,10 @@
             android:id="@+id/shop_cardView_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginStart="@dimen/cards_shop_title_margin_start"
+            android:layout_marginTop="@dimen/cards_shop_title_margin_top"
+            android:layout_marginEnd="@dimen/cards_shop_title_margin_end"
+            android:layout_marginBottom="@dimen/cards_shop_title_margin_bottom"
             android:gravity="center|top"
           app:layout_constraintBottom_toTopOf="@id/shop_cardView_address"
             app:layout_constraintEnd_toEndOf="parent"
@@ -45,12 +45,14 @@
             android:id="@+id/shop_cardView_address"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cards_shop_title_margin_start"
+            android:layout_marginEnd="@dimen/cards_shop_title_margin_end"
+            android:layout_marginBottom="@dimen/cards_shop_title_margin_bottom"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/shop_cardView_imageView"
             app:layout_constraintTop_toBottomOf="@+id/shop_cardView_title"
             app:layout_constraintBottom_toBottomOf="parent"
             android:gravity="center|top"
-
             tools:text="адрес магазина" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

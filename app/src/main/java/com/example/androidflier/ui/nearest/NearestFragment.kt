@@ -56,7 +56,7 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), View.OnClickListene
             viewLifecycleOwner, shopObserver
         )
 
-        binding.btn.setOnClickListener(this)
+
 
     }
 

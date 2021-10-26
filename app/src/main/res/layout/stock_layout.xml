@@ -1,12 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/stock_cardView"
-    android:layout_width="150dp"
-    android:layout_height="150dp"
-    android:layout_marginBottom="@dimen/cards_vertical_margin"
-    app:cardCornerRadius="@dimen/cards_corner_radius">
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/cards_stock_height"
+    android:layout_marginStart="@dimen/cards_stock_vertical_margin"
+    android:layout_marginEnd="@dimen/cards_stock_vertical_margin"
+    android:layout_marginBottom="@dimen/cards_stock_vertical_margin"
+    app:cardCornerRadius="@dimen/cards_stock_corner_radius"
+    app:cardElevation="@dimen/cards_stock_elevation">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -14,17 +18,24 @@
 
         <ImageView
             android:id="@+id/stock_layout_img"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_width="0dp"
+            android:layout_height="@dimen/cards_stock_image_height"
+            android:src="@drawable/ic_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/stock_layout_title"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
-
+            android:layout_marginTop="@dimen/cards_stock_text_margin_top"
+            android:ellipsize="end"
+            android:lines="3"
+            android:layout_marginStart="@dimen/cards_stock_text_margin_start"
+            android:layout_marginEnd="@dimen/cards_stock_text_margin_end"
+            app:layout_constraintEnd_toEndOf="@+id/stock_layout_img"
+            app:layout_constraintStart_toStartOf="@+id/stock_layout_img"
+            app:layout_constraintTop_toBottomOf="@id/stock_layout_img" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>
