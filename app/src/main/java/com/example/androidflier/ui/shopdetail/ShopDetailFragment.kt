@@ -68,7 +68,6 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
         bottomSheetBehavior.isHideable = true
 
         binding.shopDetailFragmentBtnInfo.setOnClickListener() {
-            Log.d("bot", bottomSheetBehavior.state.toString())
             if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
             } else {

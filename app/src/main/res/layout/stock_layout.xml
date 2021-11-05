@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/stock_cardView"
@@ -29,13 +28,53 @@
             android:id="@+id/stock_layout_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cards_stock_text_margin_start"
             android:layout_marginTop="@dimen/cards_stock_text_margin_top"
+            android:layout_marginEnd="@dimen/cards_stock_text_margin_end"
             android:ellipsize="end"
             android:lines="3"
-            android:layout_marginStart="@dimen/cards_stock_text_margin_start"
-            android:layout_marginEnd="@dimen/cards_stock_text_margin_end"
             app:layout_constraintEnd_toEndOf="@+id/stock_layout_img"
             app:layout_constraintStart_toStartOf="@+id/stock_layout_img"
-            app:layout_constraintTop_toBottomOf="@id/stock_layout_img" />
+            app:layout_constraintTop_toBottomOf="@id/stock_layout_img"
+            tools:text="'это текст тект сте текст текст текст " />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/stock_layout_price_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/cards_stock_text_margin_start"
+            android:layout_marginTop="@dimen/cards_stock_text_margin_top"
+            android:layout_marginEnd="@dimen/cards_stock_text_margin_end"
+            android:orientation="horizontal"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="@id/stock_layout_title"
+            app:layout_constraintTop_toBottomOf="@id/stock_layout_title">
+
+            <TextView
+                android:id="@+id/stock_layout_price_cur_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="500" />
+
+            <TextView
+                android:id="@+id/stock_layout_price_old_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/cards_stock_text_margin_start"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/stock_layout_price_cur_price"
+                tools:text="600" />
+
+            <TextView
+                android:id="@+id/stock_layout_price_optional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                tools:text="600" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

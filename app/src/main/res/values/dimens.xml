@@ -14,7 +14,7 @@
     <dimen name="cards_stock_text_margin_start">8dp</dimen>
     <dimen name="cards_stock_text_margin_top">8dp</dimen>
        <!-- card shop -->
-    <dimen name="cards_shop_corner_radius">4dp</dimen>
+    <dimen name="cards_shop_corner_radius">5dp</dimen>
     <dimen name="cards_shop_margin_bottom">8dp</dimen>
     <dimen name="cards_shop_image_width">50dp</dimen>
     <dimen name="cards_shop_image_height">50dp</dimen>
