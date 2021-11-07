@@ -3,24 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.3828125" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/drawable/ic_heart.xml" value="0.3828125" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.3828125" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/drawable/ic_info.xml" value="0.3828125" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/layout/activity_main.xml" value="0.17831813576494426" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/layout/bottom_sheet.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/layout/fragment_dashboard.xml" value="0.28306159420289856" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/layout/fragment_home.xml" value="0.2957427536231884" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/layout/fragment_nearest.xml" value="0.22" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/layout/fragment_notifications.xml" value="0.28306159420289856" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/layout/fragment_shop_detail.xml" value="0.25" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/layout/shop_layout.xml" value="0.28306159420289856" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/layout/stock_layout.xml" value="0.26145833333333335" />
-        <entry key="..\:/Users/Sergey/AndroidFlier/app/src/main/res/menu/bottom_nav_menu.xml" value="0.1" />
         <entry key="..\:/Users/Sergey/AndroidStudioProjects/AndroidFlier/app/src/main/res/layout/activity_main.xml" value="0.2957427536231884" />
-        <entry key="..\:/Users/Sergey/AndroidStudioProjects/AndroidFlier/app/src/main/res/layout/fragment_home.xml" value="0.2869791666666667" />
-        <entry key="..\:/Users/Sergey/AndroidStudioProjects/AndroidFlier/app/src/main/res/layout/fragment_notifications.xml" value="0.28940217391304346" />
-        <entry key="..\:/Users/Sergey/AndroidStudioProjects/AndroidFlier/app/src/main/res/layout/shop.xml" value="0.28940217391304346" />
+        <entry key="..\:/Users/explo/StudioProjects/AndroidFlier/app/src/main/res/layout/fragment_shop_detail.xml" value="0.1793478260869565" />
+        <entry key="..\:/Users/explo/StudioProjects/AndroidFlier/app/src/main/res/layout/stock_layout.xml" value="0.1793478260869565" />
       </map>
     </option>
   </component>

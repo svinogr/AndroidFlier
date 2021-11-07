@@ -1,9 +1,7 @@
 package com.example.androidflier.ui.shopdetail
 
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.example.androidflier.model.Shop
-import com.example.androidflier.repo.ShopRepository
 import com.example.androidflier.ui.viewmodels.BaseShopModel
 
 /*

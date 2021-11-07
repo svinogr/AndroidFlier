@@ -1,11 +1,13 @@
 package com.example.androidflier.repo
 
+import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.androidflier.model.Shop
 import com.example.androidflier.model.Stock
 
 class ShopRepository private constructor() {
+  lateinit var shopApi: ShopApi
 
     companion object {
         private lateinit var instance: ShopRepository
