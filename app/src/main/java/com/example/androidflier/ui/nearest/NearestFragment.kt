@@ -45,7 +45,7 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), View.OnClickListene
 
         shopObserver = Observer {
             adapter.listShops = it
-            //  adapter.notifyDataSetChanged()
+              adapter.notifyDataSetChanged()
             Toast.makeText(
                 this.context,
                 shopsViewModel.shops.value?.size.toString(),
@@ -135,7 +135,7 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), View.OnClickListene
     }*/
 
     override fun onClick(v: View?) {
-        shopsViewModel.allNearestShopsTest()
+        shopsViewModel.allNearestShops()
         Toast.makeText(
             activity,
             "button ${shopsViewModel.shops.value?.size}",

@@ -19,16 +19,13 @@ import com.example.androidflier.ui.viewmodels.ListModelFactory
 import com.example.androidflier.ui.nearest.NearestListShopsViewModel
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickListener {
-
-
-    //  private lateinit var homeViewModel: HomeViewModel
     private var _binding: FragmentNearestBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
-    private lateinit var shopsViewModel: NearestListShopsViewModel
+    private lateinit var shopsViewModel: DashboardViewModel
     private lateinit var adapter: ShopCardAdapter
     private lateinit var shopObserver: Observer<List<Shop>>
 
@@ -38,7 +35,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentNearestBinding.inflate(inflater, container, false)
-        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory()).get("2", NearestListShopsViewModel::class.java)
+        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory()).get("2", DashboardViewModel::class.java)
 
         recyclerView = binding.nearestRecyclerView
         val lManager = LinearLayoutManager(view?.context)
@@ -62,11 +59,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
             viewLifecycleOwner, shopObserver
         )
 
-
-
-        Log.i("ttttt", "cre")
-
-        // updateUi()
         return binding.root
     }
 
@@ -79,12 +71,12 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
     }
 
     override fun onClick(v: View?) {
-        shopsViewModel.allNearestShopsTest()
-        Toast.makeText(
+       // shopsViewModel.allNearestShops()
+    /*    Toast.makeText(
             activity,
             "button ${shopsViewModel.shops.value?.size}",
             Toast.LENGTH_SHORT
         )
-            .show()
+            .show()*/
     }
 }
