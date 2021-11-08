@@ -16,7 +16,7 @@ import com.example.androidflier.adapter.ShopCardAdapter
 import com.example.androidflier.databinding.FragmentNearestBinding
 import com.example.androidflier.model.Shop
 import com.example.androidflier.ui.viewmodels.ListModelFactory
-import com.example.androidflier.ui.viewmodels.NearestListShopsViewModel
+import com.example.androidflier.ui.nearest.NearestListShopsViewModel
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickListener {
 

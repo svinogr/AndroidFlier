@@ -1,9 +1,7 @@
 package com.example.androidflier.ui.shopdetail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.GridLayout
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -48,7 +46,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
         recycler.adapter = adapter
 
         shop.shop.observe(viewLifecycleOwner) {
-            adapter.stocks = it.listStock
+            adapter.stocks = it.stocks
             binding.shopDetailFragmentTitleShop.text = it.title
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_title).text = it.title
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_body).text = it.description

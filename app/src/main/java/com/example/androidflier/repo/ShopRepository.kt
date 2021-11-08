@@ -26,6 +26,7 @@ class ShopRepository private constructor() {
         return ""
     }
 
+/*
     fun getAllTestNearestShop(): List<Shop> {
         val shopsList = mutableListOf<Shop>()
         for (i in 0..20) {
@@ -46,15 +47,16 @@ class ShopRepository private constructor() {
 
         return shopsList
     }
+*/
 
     fun getAllShopsByTitle(title: String) {
 
     }
 
-    fun getShopById(id: Long): Shop {
+ /*   fun getShopById(id: Long): Shop {
         // TODO
         val stocks = mutableListOf(Stock(1, "акция 1 в три строки или больше или в пять даже и может даже в шестнадцать", "описание 1", 500.00, 600.00), Stock(2, "акция 2 в три строки или больше или в пять даже  и может даже в шестнадцать", "описание 2", 500.00, 600.00))
         val shop = Shop(id, 10.00, 10.00, "adress", "descr", "www", "img", "название магаза",  stocks)
         return shop
-    }
+    }*/
 }

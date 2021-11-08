@@ -13,7 +13,6 @@ import com.example.androidflier.adapter.ShopCardAdapter
 import com.example.androidflier.databinding.FragmentNearestBinding
 import com.example.androidflier.model.Shop
 import com.example.androidflier.ui.viewmodels.ListModelFactory
-import com.example.androidflier.ui.viewmodels.NearestListShopsViewModel
 
 class NearestFragment : Fragment(R.layout.fragment_nearest), View.OnClickListener {
 
@@ -32,7 +31,10 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), View.OnClickListene
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentNearestBinding.bind(view)
-        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory()).get("1", NearestListShopsViewModel::class.java)
+        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory()).get(
+            "1",
+            NearestListShopsViewModel::class.java
+        )
 
         recyclerView = binding.nearestRecyclerView
         val lManager = LinearLayoutManager(view?.context)
@@ -43,7 +45,7 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), View.OnClickListene
 
         shopObserver = Observer {
             adapter.listShops = it
-            adapter.notifyDataSetChanged()
+            //  adapter.notifyDataSetChanged()
             Toast.makeText(
                 this.context,
                 shopsViewModel.shops.value?.size.toString(),
@@ -55,7 +57,6 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), View.OnClickListene
         shopsViewModel.shops.observe(
             viewLifecycleOwner, shopObserver
         )
-
 
 
     }
@@ -137,7 +138,7 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), View.OnClickListene
         shopsViewModel.allNearestShopsTest()
         Toast.makeText(
             activity,
-          "button ${shopsViewModel.shops.value?.size}",
+            "button ${shopsViewModel.shops.value?.size}",
             Toast.LENGTH_SHORT
         )
             .show()

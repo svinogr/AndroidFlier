@@ -2,12 +2,16 @@ package com.example.androidflier.model
 
 data class Shop(
     var id: Long,
-    var lat: Double,
-    var lng: Double,
+    var created: String,
+    var updated: String,
+    var status: String,
+    var userId: Long,
+    var coordLat: Double,
+    var coordLng: Double,
+    var title: String,
     var address: String,
     var description: String,
     var url: String,
     var img: String,
-    var title: String,
-    var listStock: MutableList<Stock>
+    var stocks: MutableList<Stock>
 )
