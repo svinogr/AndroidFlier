@@ -8,6 +8,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface ShopApi {
+    /**
+     * returns all shops with limit quantity and start from
+     */
     @Headers(
         "Accept: application/json",
         "Content-type:application/json"
@@ -16,14 +19,28 @@ interface ShopApi {
     fun getAllShop( @Query("from") from : String = "0",
                     @Query("quantity") quantity : String = "10"): Call<List<Shop>>
 
+    /**
+     * returns all NEAREST shops with limit quantity and start from
+     * api: ".api/shop?lng={lng}&lat={lat}&from=0&quantity=10"
+     */
     @Headers(
         "Accept: application/json",
         "Content-type:application/json"
     )
-  //  @GET(value = ".api/shop?lng={lng}&lat={lat}&from=0&quantity=10")
     @GET(value = "./api/shop")
     fun getAllNearestShop(@Query("lng") lng: Double,
                           @Query("lat") lat: Double,
                           @Query("from") from : String = "0",
                           @Query("quantity") quantity : String = "10"): Call<List<Shop>>
+
+    /**
+     * returns shop with his stocks
+     * api: "./api/shop/{shop id}"
+     */
+    @Headers(
+        "Accept: application/json",
+        "Content-type:application/json"
+    )
+    @GET(value = "/api/shop/{shopId}")
+    fun getShopWithStocks(@Path("shopId") shopId: Long): Call<Shop>
 }

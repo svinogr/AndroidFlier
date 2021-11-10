@@ -22,7 +22,7 @@ class ShopViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         title.text = shop.title
         address.text = shop.address
         itemView.setOnClickListener(){
-            it.findNavController().navigate(R.id.action_navigation_home_to_shopDetailFragment, bundleOf(
+            it.findNavController().navigate(R.id.shopDetailFragment, bundleOf(
                 ShopDetailFragment.ARG_ID_LONG to shop.id))
         }
     }

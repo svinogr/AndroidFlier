@@ -18,7 +18,7 @@ import com.example.androidflier.model.Shop
 import com.example.androidflier.ui.viewmodels.ListModelFactory
 import com.example.androidflier.ui.nearest.NearestListShopsViewModel
 
-class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickListener {
+class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private var _binding: FragmentNearestBinding? = null
 
     // This property is only valid between onCreateView and
@@ -60,23 +60,5 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard), View.OnClickLis
         )
 
         return binding.root
-    }
-
-    override fun onResume() {
-        super.onResume()
-
-        //  shopsViewModel.allShopsTest()
-
-        Log.i("ttttt", "res")
-    }
-
-    override fun onClick(v: View?) {
-       // shopsViewModel.allNearestShops()
-    /*    Toast.makeText(
-            activity,
-            "button ${shopsViewModel.shops.value?.size}",
-            Toast.LENGTH_SHORT
-        )
-            .show()*/
     }
 }

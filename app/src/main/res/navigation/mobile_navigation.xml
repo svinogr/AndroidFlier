@@ -19,7 +19,11 @@
         android:id="@+id/navigation_dashboard"
         android:name="com.example.androidflier.ui.allshops.DashboardFragment"
         android:label="@string/title_all"
-        tools:layout="@layout/fragment_dashboard" />
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_shopDetailFragment"
+            app:destination="@id/shopDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_notifications"

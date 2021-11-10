@@ -31,10 +31,12 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
         binding = FragmentShopDetailBinding.bind(view)
 
         val id = requireArguments().getLong(ARG_ID_LONG)
+
         shop = ViewModelProvider(
-            requireActivity(),
+            this,
             SingleEntityModelFactory(id)
         ).get(ShopViewModel::class.java)
+
         bottomSheetLayout = binding.bottomSheet.bottomSheet
 
         setBottomShett()
@@ -47,12 +49,11 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
 
         shop.shop.observe(viewLifecycleOwner) {
             adapter.stocks = it.stocks
+            adapter.notifyDataSetChanged()
             binding.shopDetailFragmentTitleShop.text = it.title
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_title).text = it.title
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_body).text = it.description
         }
-
-
     }
 
     private fun setBottomShett() {
