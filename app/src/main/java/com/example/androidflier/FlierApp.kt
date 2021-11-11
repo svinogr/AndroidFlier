@@ -1,16 +1,18 @@
 package com.example.androidflier
 
 import android.app.Application
-import android.database.sqlite.SQLiteDatabase
-import com.example.androidflier.repo.ShopApi
 import com.example.androidflier.repo.ShopRepository
-import com.example.androidflier.repo.localdb.DataBaseHelper
-import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-
-import java.util.*
+import com.example.androidflier.repo.ShopRepositoryable
+import com.example.androidflier.repo.localdb.LocalDataStorageable
+import com.example.androidflier.repo.localdb.ManagerLocalStorage
 
 class FlierApp() : Application() {
-   }
+     lateinit var shopRepo: ShopRepositoryable
+     lateinit var localDb: LocalDataStorageable
+
+    override fun onCreate() {
+        super.onCreate()
+        shopRepo = ShopRepository.getInstance()
+        localDb = ManagerLocalStorage(this)
+    }
+}

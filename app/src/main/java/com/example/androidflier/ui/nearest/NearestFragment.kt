@@ -36,7 +36,7 @@ class NearestFragment : Fragment(R.layout.fragment_nearest) {
         super.onViewCreated(view, savedInstanceState)
 
         _binding = FragmentNearestBinding.bind(view)
-        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory()).get(
+        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory(requireActivity().application)).get(
             "1",
             NearestListShopsViewModel::class.java
         )

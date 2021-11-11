@@ -37,7 +37,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentNearestBinding.inflate(inflater, container, false)
-        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory()).get("2", DashboardViewModel::class.java)
+        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory(requireActivity().application)).get("2", DashboardViewModel::class.java)
 
         db = ManagerLocalStorage(requireContext().applicationContext)
 

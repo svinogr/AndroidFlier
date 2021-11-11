@@ -5,7 +5,7 @@ import com.example.androidflier.model.Shop
 import com.example.androidflier.repo.retrofit.RetrofitInst
 import retrofit2.Call
 
-class ShopRepository private constructor() {
+class ShopRepository private constructor(): ShopRepositoryable {
     private lateinit var shopApi: ShopApi
 
     companion object {
@@ -21,18 +21,18 @@ class ShopRepository private constructor() {
         }
     }
 
-    fun getAllShops(): Call<List<Shop>> {
+    override fun getAllShops(): Call<List<Shop>> {
         return shopApi.getAllShop()
     }
 
-    fun getAllNearestShops(): Call<List<Shop>> {
+    override fun getAllNearestShops(): Call<List<Shop>> {
         //TODO заменить на пполучение координат
         val coord = Coord(-57.5, -25.3)
        //TODO
         return shopApi.getAllNearestShop(coord.lng, coord.lat)
     }
 
-    fun getShopWithStocks(shopId: Long): Call<Shop> {
+   override fun getShopWithStocks(shopId: Long): Call<Shop> {
         return shopApi.getShopWithStocks(shopId)
     }
 }

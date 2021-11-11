@@ -1,5 +1,6 @@
 package com.example.androidflier.ui.shopdetail
 
+import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -9,7 +10,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShopViewModel(private val id: Long) : BaseShopModel() {
+class ShopViewModel(private val id: Long, context: Application) : BaseShopModel(context) {
     private var _shop = MutableLiveData<Shop>()
     val shop: LiveData<Shop> = _shop
 
@@ -31,5 +32,9 @@ class ShopViewModel(private val id: Long) : BaseShopModel() {
         })
 
         //  _shop.value = shopRepo.getShopById(id)
+    }
+
+    fun saveToLocalBase() {
+        _shop.value?.let { Log.d("TAG", it.address) }
     }
 }

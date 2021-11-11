@@ -34,12 +34,18 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
 
         shop = ViewModelProvider(
             this,
-            SingleEntityModelFactory(id)
+            SingleEntityModelFactory(id, requireActivity().application)
         ).get(ShopViewModel::class.java)
 
         bottomSheetLayout = binding.bottomSheet.bottomSheet
 
-        setBottomShett()
+        setBottomSheetBehavior()
+
+        binding.bottomSheet.saveToFavorite.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                shop.saveToLocalBase()
+            }
+        })
 
         val layout = GridLayoutManager(requireContext(), 2)
         recycler = binding.shopDetailFragmentRecyclerStocks
@@ -54,9 +60,10 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_title).text = it.title
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_body).text = it.description
         }
+
     }
 
-    private fun setBottomShett() {
+    private fun setBottomSheetBehavior() {
         val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet)
 
         bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
