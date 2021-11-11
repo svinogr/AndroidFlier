@@ -15,6 +15,7 @@ import com.example.androidflier.R
 import com.example.androidflier.adapter.ShopCardAdapter
 import com.example.androidflier.databinding.FragmentNearestBinding
 import com.example.androidflier.model.Shop
+import com.example.androidflier.repo.localdb.ManagerLocalStorage
 import com.example.androidflier.ui.viewmodels.ListModelFactory
 import com.example.androidflier.ui.nearest.NearestListShopsViewModel
 
@@ -28,6 +29,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private lateinit var shopsViewModel: DashboardViewModel
     private lateinit var adapter: ShopCardAdapter
     private lateinit var shopObserver: Observer<List<Shop>>
+    private lateinit var db: ManagerLocalStorage
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,6 +38,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     ): View? {
         _binding = FragmentNearestBinding.inflate(inflater, container, false)
         shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory()).get("2", DashboardViewModel::class.java)
+
+        db = ManagerLocalStorage(requireContext().applicationContext)
 
         recyclerView = binding.nearestRecyclerView
         val lManager = LinearLayoutManager(view?.context)
@@ -47,6 +51,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         shopObserver = Observer {
             adapter.listShops = it
             adapter.notifyDataSetChanged()
+            db.save(it[0])
             Toast.makeText(
                 this.context,
                 shopsViewModel.shops.value?.size.toString(),

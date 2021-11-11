@@ -53,7 +53,6 @@ class NearestFragment : Fragment(R.layout.fragment_nearest) {
         shopObserver = Observer {
             adapter.listShops = it
             adapter.notifyDataSetChanged()
-            db.save(it[0])
             Toast.makeText(
                 this.context,
                 shopsViewModel.shops.value?.size.toString(),
