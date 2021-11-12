@@ -31,13 +31,17 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private lateinit var shopObserver: Observer<List<Shop>>
     private lateinit var db: ManagerLocalStorage
 
+    companion object{
+        const val TAG = "DashboardFragment"
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentNearestBinding.inflate(inflater, container, false)
-        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory(requireActivity().application)).get("2", DashboardViewModel::class.java)
+        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory(requireActivity().application)).get(TAG, DashboardViewModel::class.java)
 
         db = ManagerLocalStorage(requireContext().applicationContext)
 
@@ -51,7 +55,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         shopObserver = Observer {
             adapter.listShops = it
             adapter.notifyDataSetChanged()
-            db.save(it[0])
             Toast.makeText(
                 this.context,
                 shopsViewModel.shops.value?.size.toString(),

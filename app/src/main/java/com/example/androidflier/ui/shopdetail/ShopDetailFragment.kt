@@ -1,7 +1,10 @@
 package com.example.androidflier.ui.shopdetail
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.fragment.app.Fragment
@@ -11,19 +14,23 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.androidflier.R
 import com.example.androidflier.adapter.StockCardAdapter
 import com.example.androidflier.databinding.FragmentShopDetailBinding
+import com.example.androidflier.model.Shop
 import com.example.androidflier.ui.viewmodels.SingleEntityModelFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
-    companion object {
-        const val ARG_ID_LONG = "id"
-    }
 
     private lateinit var recycler: RecyclerView
     private lateinit var binding: FragmentShopDetailBinding
     private lateinit var shop: ShopViewModel
     private lateinit var adapter: StockCardAdapter
     private lateinit var bottomSheetLayout: LinearLayout
+    private lateinit var btnFavorite: Button
+
+    companion object {
+        const val ARG_ID_LONG = "id"
+        const val TAG = "ShopDetailFragment"
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -35,17 +42,23 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
         shop = ViewModelProvider(
             this,
             SingleEntityModelFactory(id, requireActivity().application)
-        ).get(ShopViewModel::class.java)
+        ).get(TAG, ShopViewModel::class.java)
 
         bottomSheetLayout = binding.bottomSheet.bottomSheet
 
         setBottomSheetBehavior()
 
-        binding.bottomSheet.saveToFavorite.setOnClickListener(object : View.OnClickListener {
+        btnFavorite = binding.bottomSheet.saveToFavorite
+
+        btnFavorite.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-                shop.saveToLocalBase()
+
+                Log.d(TAG, shop.toString())
+                shop.shop.value?.let { changeStatusFavoriteShop(it) }
             }
+
         })
+
 
         val layout = GridLayoutManager(requireContext(), 2)
         recycler = binding.shopDetailFragmentRecyclerStocks
@@ -57,9 +70,23 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
             adapter.stocks = it.stocks
             adapter.notifyDataSetChanged()
             binding.shopDetailFragmentTitleShop.text = it.title
-            bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_title).text = it.title
+            bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_title).text =
+                it.title + it.favoriteStatus.toString()
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_body).text = it.description
         }
+    }
+
+    private fun changeStatusFavoriteShop(shop: Shop) {
+        if (shop.favoriteStatus) {
+            this.shop.deleteFromLocalDb(shop)
+            this.shop.shop.value?.favoriteStatus = false
+            this.shop.shop.
+        } else {
+            this.shop.saveToLocalDb(shop)
+            this.shop.shop.value?.favoriteStatus = true
+        }
+
+        Log.d(TAG, shop.favoriteStatus.toString())
 
     }
 
@@ -81,6 +108,4 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
             }
         }
     }
-
-
 }

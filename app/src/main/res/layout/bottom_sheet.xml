@@ -11,7 +11,7 @@
     app:behavior_peekHeight="80dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
-    <ImageButton
+    <Button
         android:id="@+id/saveToFavorite"
         android:layout_gravity="end"
         android:layout_marginEnd="16dp"

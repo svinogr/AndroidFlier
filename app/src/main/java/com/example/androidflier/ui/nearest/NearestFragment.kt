@@ -20,7 +20,6 @@ import com.example.androidflier.ui.viewmodels.ListModelFactory
 
 class NearestFragment : Fragment(R.layout.fragment_nearest) {
 
-    //  private lateinit var homeViewModel: HomeViewModel
     private var _binding: FragmentNearestBinding? = null
 
     // This property is only valid between onCreateView and
@@ -31,6 +30,10 @@ class NearestFragment : Fragment(R.layout.fragment_nearest) {
     private lateinit var adapter: ShopCardAdapter
     private lateinit var shopObserver: Observer<List<Shop>>
     private lateinit var db: ManagerLocalStorage
+
+    companion object{
+        const val TAG = "NearestFragment"
+    }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)

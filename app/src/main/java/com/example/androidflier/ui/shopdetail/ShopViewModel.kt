@@ -5,12 +5,12 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.androidflier.model.Shop
-import com.example.androidflier.ui.viewmodels.BaseShopModel
+import com.example.androidflier.ui.viewmodels.BaseShopViewModel
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShopViewModel(private val id: Long, context: Application) : BaseShopModel(context) {
+class ShopViewModel(private val id: Long, context: Application) : BaseShopViewModel(context) {
     private var _shop = MutableLiveData<Shop>()
     val shop: LiveData<Shop> = _shop
 
@@ -27,14 +27,17 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopModel(
             }
 
             override fun onResponse(call: Call<Shop>, response: Response<Shop>) {
-                _shop.value = response.body()
+                val shop = response.body()
+                val localShop: List<Shop> = localDb.getAllFavoriteShops()
+
+                if (localShop.contains(shop)) shop?.favoriteStatus = true
+                Log.d("TAG", shop?.favoriteStatus.toString())
+                if (shop != null) {
+                    _shop.value = shop!!
+                }
             }
         })
 
-        //  _shop.value = shopRepo.getShopById(id)
     }
 
-    fun saveToLocalBase() {
-        _shop.value?.let { Log.d("TAG", it.address) }
-    }
 }

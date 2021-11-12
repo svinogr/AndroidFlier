@@ -5,6 +5,7 @@ import android.content.Context
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.util.Log
 import com.example.androidflier.model.Shop
 import com.example.androidflier.model.Stock
 
@@ -21,9 +22,10 @@ const val SHOP_COL_ADDRESS = "address"
 const val SHOP_COL_DESCRIPTION = "description"
 const val SHOP_COL_URL = "url"
 const val SHOP_COL_IMG = "img"
+const val SHOP_COL_FAVORITE = "favorite"
 
 const val CREATE_TABLE_SHOP =
-    "CREATE TABLE " + TABLENAME + " (id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+    "CREATE TABLE " + TABLENAME + " (id INTEGER, " +
             SHOP_COL_USERID + " INTEGER, " +
             SHOP_COL_TITLE + " CHARACTER VARYING(200), " +
             SHOP_COL_DESCRIPTION + " CHARACTER VARYING(300), " +
@@ -60,6 +62,7 @@ class DataBaseHelper(var context: Context) :
     fun save(shop: Shop) {
         val writableDatabase = instance!!.writableDatabase
 
+        Log.d("Save", shop.toString())
         val contValue = ContentValues().apply {
             put(SHOP_COL_ID, shop.id)
             put(SHOP_COL_USERID, shop.userId)
@@ -73,6 +76,7 @@ class DataBaseHelper(var context: Context) :
         }
 
         writableDatabase.insert(TABLENAME, null, contValue)
+        writableDatabase.close()
     }
 
     fun getAllShop(): List<Shop> {
@@ -108,7 +112,15 @@ class DataBaseHelper(var context: Context) :
             description = cursor.getString(cursor.getColumnIndexOrThrow(SHOP_COL_DESCRIPTION)),
             url = cursor.getString(cursor.getColumnIndexOrThrow(SHOP_COL_URL)),
             img = cursor.getString(cursor.getColumnIndexOrThrow(SHOP_COL_IMG)),
-            stocks = mutableListOf<Stock>()
+            stocks = mutableListOf<Stock>(),
+            favoriteStatus = true
         )
+    }
+
+    fun delete(shop: Shop) {
+        val writableDatabase = instance!!.writableDatabase
+        Log.d("DELETE", shop.toString())
+        writableDatabase.delete(TABLENAME, SHOP_COL_ID + " = "  + shop.id, null)
+        writableDatabase.close()
     }
 }
