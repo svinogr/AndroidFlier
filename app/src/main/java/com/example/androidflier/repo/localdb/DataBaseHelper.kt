@@ -117,10 +117,28 @@ class DataBaseHelper(var context: Context) :
         )
     }
 
-    fun delete(shop: Shop) {
+    fun delete(shop: Shop): Int {
         val writableDatabase = instance!!.writableDatabase
         Log.d("DELETE", shop.toString())
-        writableDatabase.delete(TABLENAME, SHOP_COL_ID + " = "  + shop.id, null)
+        val row = writableDatabase.delete(TABLENAME, SHOP_COL_ID + " = "  + shop.id, null)
         writableDatabase.close()
+        return row
+    }
+
+    fun getShopById(id: Long): Shop?  {
+        val writableDatabase = instance!!.writableDatabase
+        Log.d("getShopById ", id.toString())
+        val cursor = writableDatabase.query(
+            TABLENAME,
+            null,
+            SHOP_COL_ID + " = " + id,
+            null,
+            null,
+            null,
+            null
+        )
+
+        if (!cursor.moveToNext()) return null
+        return  shopFromCursor(cursor)
     }
 }

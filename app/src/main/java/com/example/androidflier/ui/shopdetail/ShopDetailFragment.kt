@@ -25,7 +25,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
     private lateinit var shop: ShopViewModel
     private lateinit var adapter: StockCardAdapter
     private lateinit var bottomSheetLayout: LinearLayout
-    private lateinit var btnFavorite: Button
+    private lateinit var btnFavorite: ImageButton
 
     companion object {
         const val ARG_ID_LONG = "id"
@@ -52,13 +52,9 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
 
         btnFavorite.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {
-
-                Log.d(TAG, shop.toString())
-                shop.shop.value?.let { changeStatusFavoriteShop(it) }
+                shop.changeFavoriteStatus()
             }
-
         })
-
 
         val layout = GridLayoutManager(requireContext(), 2)
         recycler = binding.shopDetailFragmentRecyclerStocks
@@ -73,6 +69,8 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_title).text =
                 it.title + it.favoriteStatus.toString()
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_body).text = it.description
+
+            if (it.favoriteStatus) btnFavorite.setImageResource(R.drawable.ic_heart_red) else btnFavorite.setImageResource(R.drawable.ic_heart_white)
         }
     }
 
@@ -80,7 +78,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
         if (shop.favoriteStatus) {
             this.shop.deleteFromLocalDb(shop)
             this.shop.shop.value?.favoriteStatus = false
-            this.shop.shop.
+
         } else {
             this.shop.saveToLocalDb(shop)
             this.shop.shop.value?.favoriteStatus = true

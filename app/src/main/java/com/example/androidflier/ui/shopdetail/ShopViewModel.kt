@@ -15,12 +15,12 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
     val shop: LiveData<Shop> = _shop
 
     init {
-        Log.d("TAG", id.toString())
+        Log.d("ShopViewModel", id.toString())
         startInitialize()
     }
 
     override fun startInitialize() {
-        Log.d("TAG", "initialize")
+        Log.d("ShopViewModel", "initialize")
         shopRepo.getShopWithStocks(id).enqueue(object : Callback<Shop> {
             override fun onFailure(call: Call<Shop>, t: Throwable) {
                 Log.d("TAG", t.message.toString())
@@ -28,11 +28,14 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
 
             override fun onResponse(call: Call<Shop>, response: Response<Shop>) {
                 val shop = response.body()
-                val localShop: List<Shop> = localDb.getAllFavoriteShops()
 
-                if (localShop.contains(shop)) shop?.favoriteStatus = true
-                Log.d("TAG", shop?.favoriteStatus.toString())
                 if (shop != null) {
+                    val localShop: Shop? = localDb.getShopById(shop.id)
+
+                    if (localShop != null) {
+                        shop?.favoriteStatus = true
+                        Log.d("ShopViewModel", shop?.favoriteStatus.toString())
+                    }
                     _shop.value = shop!!
                 }
             }
@@ -40,4 +43,23 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
 
     }
 
+    fun changeFavoriteStatus() {
+        val deleteShop = _shop.value!!
+        val deleteRow = localDb.delete(deleteShop)
+        if (deleteRow > 0) {
+            deleteShop.favoriteStatus = false
+        } else {
+            localDb.save(deleteShop)
+            deleteShop.favoriteStatus = true
+        }
+        _shop.value = deleteShop
+    }
+
+    fun deleteFromLocalDb(shop: Shop) {
+        localDb.delete(shop)
+    }
+
+    fun saveToLocalDb(shop: Shop) {
+        localDb.save(shop)
+    }
 }

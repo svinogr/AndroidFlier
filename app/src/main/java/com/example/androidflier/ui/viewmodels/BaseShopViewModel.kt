@@ -20,13 +20,4 @@ abstract class BaseShopViewModel(open val context: Application): ViewModel() {
     }
 
     abstract fun startInitialize()
-
-    fun saveToLocalDb(shop: Shop) {
-        shop.favoriteStatus = true
-        localDb.save(shop)
-    }
-
-    fun deleteFromLocalDb(shop: Shop) {
-        localDb.delete(shop)
-    }
 }

@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidflier.R
 import com.example.androidflier.adapter.ShopCardAdapter
+import com.example.androidflier.databinding.FragmentDashboardBinding
 import com.example.androidflier.databinding.FragmentNearestBinding
 import com.example.androidflier.model.Shop
 import com.example.androidflier.repo.localdb.ManagerLocalStorage
@@ -20,7 +22,7 @@ import com.example.androidflier.ui.viewmodels.ListModelFactory
 import com.example.androidflier.ui.nearest.NearestListShopsViewModel
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
-    private var _binding: FragmentNearestBinding? = null
+    private var _binding: FragmentDashboardBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -30,8 +32,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private lateinit var adapter: ShopCardAdapter
     private lateinit var shopObserver: Observer<List<Shop>>
     private lateinit var db: ManagerLocalStorage
+    private lateinit var progress: ProgressBar
 
-    companion object{
+    companion object {
         const val TAG = "DashboardFragment"
     }
 
@@ -40,10 +43,15 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = FragmentNearestBinding.inflate(inflater, container, false)
-        shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory(requireActivity().application)).get(TAG, DashboardViewModel::class.java)
+        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+        shopsViewModel = ViewModelProvider(
+            requireActivity(),
+            ListModelFactory(requireActivity().application)
+        ).get(TAG, DashboardViewModel::class.java)
 
         db = ManagerLocalStorage(requireContext().applicationContext)
+
+        progress = binding.progressBar
 
         recyclerView = binding.nearestRecyclerView
         val lManager = LinearLayoutManager(view?.context)
@@ -66,6 +74,16 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         shopsViewModel.shops.observe(
             viewLifecycleOwner, shopObserver
         )
+
+        shopsViewModel.loading.observe(viewLifecycleOwner, object : Observer<Boolean> {
+            override fun onChanged(t: Boolean?) {
+                   if (t!!) {
+                       progress.visibility = View.VISIBLE
+                   } else {
+                       progress.visibility = View.GONE
+                   }
+            }
+        })
 
         return binding.root
     }
