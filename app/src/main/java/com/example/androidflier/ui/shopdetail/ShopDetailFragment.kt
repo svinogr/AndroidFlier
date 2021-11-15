@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.androidflier.R
 import com.example.androidflier.adapter.StockCardAdapter
 import com.example.androidflier.databinding.FragmentShopDetailBinding
@@ -18,7 +19,8 @@ import com.example.androidflier.model.Shop
 import com.example.androidflier.ui.viewmodels.SingleEntityModelFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
-class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
+class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
+    SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var recycler: RecyclerView
     private lateinit var binding: FragmentShopDetailBinding
@@ -26,6 +28,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
     private lateinit var adapter: StockCardAdapter
     private lateinit var bottomSheetLayout: LinearLayout
     private lateinit var btnFavorite: ImageButton
+    private lateinit var refreshLayout: SwipeRefreshLayout
 
     companion object {
         const val ARG_ID_LONG = "id"
@@ -46,16 +49,18 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
 
         bottomSheetLayout = binding.bottomSheet.bottomSheet
 
+        setRefreshLayout()
         setBottomSheetBehavior()
+        setFavoriteBtn()
+        setRecyclerView()
+    }
 
-        btnFavorite = binding.bottomSheet.saveToFavorite
+    private fun setRefreshLayout() {
+        refreshLayout = binding.shopDetailRefreshLayout
+        refreshLayout.setOnRefreshListener(this)
+    }
 
-        btnFavorite.setOnClickListener(object : View.OnClickListener {
-            override fun onClick(v: View?) {
-                shop.changeFavoriteStatus()
-            }
-        })
-
+    private fun setRecyclerView() {
         val layout = GridLayoutManager(requireContext(), 2)
         recycler = binding.shopDetailFragmentRecyclerStocks
         recycler.layoutManager = layout
@@ -63,6 +68,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
         recycler.adapter = adapter
 
         shop.shop.observe(viewLifecycleOwner) {
+            refreshLayout.isRefreshing = true
             adapter.stocks = it.stocks
             adapter.notifyDataSetChanged()
             binding.shopDetailFragmentTitleShop.text = it.title
@@ -70,8 +76,21 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
                 it.title + it.favoriteStatus.toString()
             bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_body).text = it.description
 
-            if (it.favoriteStatus) btnFavorite.setImageResource(R.drawable.ic_heart_red) else btnFavorite.setImageResource(R.drawable.ic_heart_white)
+            if (it.favoriteStatus) btnFavorite.setImageResource(R.drawable.ic_heart_red) else btnFavorite.setImageResource(
+                R.drawable.ic_heart_white
+            )
+            refreshLayout.isRefreshing = false
         }
+    }
+
+    private fun setFavoriteBtn() {
+        btnFavorite = binding.bottomSheet.saveToFavorite
+
+        btnFavorite.setOnClickListener(object : View.OnClickListener {
+            override fun onClick(v: View?) {
+                shop.changeFavoriteStatus()
+            }
+        })
     }
 
     private fun changeStatusFavoriteShop(shop: Shop) {
@@ -85,7 +104,6 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
         }
 
         Log.d(TAG, shop.favoriteStatus.toString())
-
     }
 
     private fun setBottomSheetBehavior() {
@@ -105,5 +123,11 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail) {
                 bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
+    }
+
+    override fun onRefresh() {
+        refreshLayout.isRefreshing = false
+        shop.refresh()
+        refreshLayout.isRefreshing = true
     }
 }

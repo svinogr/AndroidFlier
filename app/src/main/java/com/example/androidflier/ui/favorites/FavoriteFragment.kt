@@ -9,13 +9,15 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.androidflier.R
 import com.example.androidflier.adapter.ShopCardAdapter
 import com.example.androidflier.databinding.FragmentFavoriteBinding
 import com.example.androidflier.model.Shop
 import com.example.androidflier.ui.viewmodels.ListModelFactory
 
-class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
+class FavoriteFragment : Fragment(R.layout.fragment_favorite),
+    SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var shops: FavoriteViewModel
     private var _binding: FragmentFavoriteBinding? = null
@@ -25,6 +27,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: ShopCardAdapter
+    private lateinit var refreshLayout: SwipeRefreshLayout
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,10 +35,30 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         savedInstanceState: Bundle?
     ): View? {
         shops =
-            ViewModelProvider(requireActivity(), ListModelFactory(requireActivity().application)).get(FavoriteViewModel::class.java)
+            ViewModelProvider(
+                requireActivity(),
+                ListModelFactory(requireActivity().application)
+            ).get(FavoriteViewModel::class.java)
 
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
+        setRecyclerView()
+        setRefreshLayout()
+
+        return binding.root
+    }
+
+    private fun setRefreshLayout() {
+        refreshLayout = binding.favoriteRefreshLayout
+        refreshLayout.setOnRefreshListener(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        onRefresh()
+    }
+
+    private fun setRecyclerView() {
         adapter = ShopCardAdapter()
 
         val lManager = LinearLayoutManager(view?.context)
@@ -43,18 +66,24 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite) {
         recyclerView.layoutManager = lManager
         recyclerView.adapter = adapter
 
-        shops.shops.observe(viewLifecycleOwner, object : Observer<List<Shop>>{
+        shops.shops.observe(viewLifecycleOwner, object : Observer<List<Shop>> {
             override fun onChanged(list: List<Shop>) {
+                refreshLayout.isRefreshing = true
                 adapter.listShops = list
                 adapter.notifyDataSetChanged()
+                refreshLayout.isRefreshing = false
             }
         })
-
-        return binding.root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onRefresh() {
+        refreshLayout.isRefreshing = true
+        shops.refresh()
+        refreshLayout.isRefreshing = false
     }
 }

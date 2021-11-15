@@ -62,4 +62,8 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
     fun saveToLocalDb(shop: Shop) {
         localDb.save(shop)
     }
+
+    fun refresh() {
+        startInitialize()
+    }
 }

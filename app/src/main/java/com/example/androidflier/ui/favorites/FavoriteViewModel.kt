@@ -21,4 +21,8 @@ class FavoriteViewModel(context: Application): BaseShopViewModel(context) {
         val flierApp = context as FlierApp
         _shops.value = localDb.getAllFavoriteShops()
     }
+
+    fun refresh() {
+        startInitialize()
+    }
 }

@@ -12,16 +12,17 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.androidflier.R
 import com.example.androidflier.adapter.ShopCardAdapter
 import com.example.androidflier.databinding.FragmentDashboardBinding
-import com.example.androidflier.databinding.FragmentNearestBinding
 import com.example.androidflier.model.Shop
 import com.example.androidflier.repo.localdb.ManagerLocalStorage
 import com.example.androidflier.ui.viewmodels.ListModelFactory
-import com.example.androidflier.ui.nearest.NearestListShopsViewModel
 
-class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
+
+class DashboardFragment : Fragment(R.layout.fragment_dashboard),
+    SwipeRefreshLayout.OnRefreshListener {
     private var _binding: FragmentDashboardBinding? = null
 
     // This property is only valid between onCreateView and
@@ -31,8 +32,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
     private lateinit var shopsViewModel: DashboardViewModel
     private lateinit var adapter: ShopCardAdapter
     private lateinit var shopObserver: Observer<List<Shop>>
-    private lateinit var db: ManagerLocalStorage
     private lateinit var progress: ProgressBar
+    private lateinit var refreshLayout: SwipeRefreshLayout
 
     companion object {
         const val TAG = "DashboardFragment"
@@ -44,16 +45,26 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
+
         shopsViewModel = ViewModelProvider(
             requireActivity(),
             ListModelFactory(requireActivity().application)
         ).get(TAG, DashboardViewModel::class.java)
 
-        db = ManagerLocalStorage(requireContext().applicationContext)
+        setRecyclerView()
+        setRefreshLayout()
 
-        progress = binding.progressBar
+        return binding.root
+    }
 
-        recyclerView = binding.nearestRecyclerView
+    private fun setRefreshLayout() {
+        refreshLayout = binding.dashboardRefreshLayout
+        refreshLayout.setOnRefreshListener(this)
+     //   refreshLayout.post { onRefresh() }
+    }
+
+    private fun setRecyclerView() {
+        recyclerView = binding.dashboardRecyclerView
         val lManager = LinearLayoutManager(view?.context)
         recyclerView.layoutManager = lManager
 
@@ -61,30 +72,29 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard) {
         recyclerView.adapter = adapter
 
         shopObserver = Observer {
+            refreshLayout.isRefreshing = true
+
             adapter.listShops = it
             adapter.notifyDataSetChanged()
-            Toast.makeText(
-                this.context,
-                shopsViewModel.shops.value?.size.toString(),
-                Toast.LENGTH_SHORT
-            )
-                .show()
+
+            refreshLayout.isRefreshing = false
         }
 
         shopsViewModel.shops.observe(
             viewLifecycleOwner, shopObserver
         )
 
-        shopsViewModel.loading.observe(viewLifecycleOwner, object : Observer<Boolean> {
-            override fun onChanged(t: Boolean?) {
-                   if (t!!) {
-                       progress.visibility = View.VISIBLE
-                   } else {
-                       progress.visibility = View.GONE
-                   }
-            }
-        })
+        refresh()
+    }
 
-        return binding.root
+    override fun onRefresh() {
+        refresh()
+    }
+
+    fun refresh() {
+       // refreshLayout.isRefreshing = true
+       // refreshLayout.
+        shopsViewModel.refresh()
+       // refreshLayout.isRefreshing = false
     }
 }

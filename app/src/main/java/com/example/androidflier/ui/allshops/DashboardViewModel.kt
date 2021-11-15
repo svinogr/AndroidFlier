@@ -17,9 +17,9 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean> = _loading
 
-    init {
+   /* init {
         startInitialize()
-    }
+    }*/
 
     fun allShops() {
         _loading.value = true
@@ -36,6 +36,9 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
 
     override fun startInitialize() {
         allShops()
+    }
 
+    fun refresh() {
+        allShops()
     }
 }
