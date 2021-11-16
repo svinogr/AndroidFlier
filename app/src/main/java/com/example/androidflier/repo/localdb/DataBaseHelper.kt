@@ -126,6 +126,20 @@ class DataBaseHelper(var context: Context) :
     }
 
     fun getShopById(id: Long): Shop?  {
+        val cursor = getCursorShopById(id)
+
+        if (!cursor.moveToNext()) return null
+        return  shopFromCursor(cursor)
+    }
+
+    fun hasItInDb(id: Long): Boolean {
+        val cursor = getCursorShopById(id)
+
+        if (!cursor.moveToNext()) return false
+        return  true
+    }
+
+    private fun getCursorShopById(id: Long): Cursor {
         val writableDatabase = instance!!.writableDatabase
         Log.d("getShopById ", id.toString())
         val cursor = writableDatabase.query(
@@ -138,7 +152,6 @@ class DataBaseHelper(var context: Context) :
             null
         )
 
-        if (!cursor.moveToNext()) return null
-        return  shopFromCursor(cursor)
+        return cursor
     }
 }

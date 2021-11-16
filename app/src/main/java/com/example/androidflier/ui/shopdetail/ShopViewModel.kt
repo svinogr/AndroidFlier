@@ -6,6 +6,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.androidflier.model.Shop
 import com.example.androidflier.ui.viewmodels.BaseShopViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -14,56 +18,50 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
     private var _shop = MutableLiveData<Shop>()
     val shop: LiveData<Shop> = _shop
 
-    init {
-        Log.d("ShopViewModel", id.toString())
-        startInitialize()
-    }
-
-    override fun startInitialize() {
+    fun getShop() {
         Log.d("ShopViewModel", "initialize")
-        shopRepo.getShopWithStocks(id).enqueue(object : Callback<Shop> {
-            override fun onFailure(call: Call<Shop>, t: Throwable) {
-                Log.d("TAG", t.message.toString())
-            }
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(delayRefresh)
 
-            override fun onResponse(call: Call<Shop>, response: Response<Shop>) {
-                val shop = response.body()
-
-                if (shop != null) {
-                    val localShop: Shop? = localDb.getShopById(shop.id)
-
-                    if (localShop != null) {
-                        shop?.favoriteStatus = true
-                        Log.d("ShopViewModel", shop?.favoriteStatus.toString())
-                    }
-                    _shop.value = shop!!
+            shopRepo.getShopWithStocks(id).enqueue(object : Callback<Shop> {
+                override fun onFailure(call: Call<Shop>, t: Throwable) {
+                    Log.d("TAG", t.message.toString())
                 }
-            }
-        })
 
+                override fun onResponse(call: Call<Shop>, response: Response<Shop>) {
+                    val shop = response.body()
+
+                    if (shop != null) {
+                        val shopIs = localDb.hasItInDd(id)
+
+                        if (shopIs) {
+                            shop.favoriteStatus = true
+                        }
+
+                        _shop.postValue(shop!!)
+                    }
+                }
+            })
+        }
     }
 
     fun changeFavoriteStatus() {
-        val deleteShop = _shop.value!!
-        val deleteRow = localDb.delete(deleteShop)
-        if (deleteRow > 0) {
-            deleteShop.favoriteStatus = false
-        } else {
-            localDb.save(deleteShop)
-            deleteShop.favoriteStatus = true
+        GlobalScope.launch(Dispatchers.IO) {
+            val deleteShop = _shop.value!!
+            val deleteRow = localDb.delete(deleteShop)
+
+            if (deleteRow > 0) {
+                deleteShop.favoriteStatus = false
+            } else {
+                localDb.save(deleteShop)
+                deleteShop.favoriteStatus = true
+            }
+
+            _shop.postValue(deleteShop)
         }
-        _shop.value = deleteShop
     }
 
-    fun deleteFromLocalDb(shop: Shop) {
-        localDb.delete(shop)
-    }
-
-    fun saveToLocalDb(shop: Shop) {
-        localDb.save(shop)
-    }
-
-    fun refresh() {
-        startInitialize()
+    override fun refreshData() {
+        getShop()
     }
 }

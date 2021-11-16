@@ -19,6 +19,10 @@ class ManagerLocalStorage(context: Context) : LocalDataStorageable {
     }
 
     override fun getShopById(id: Long): Shop? {
-       return db.getShopById(id)
+        return db.getShopById(id)
+    }
+
+    override fun hasItInDd(id: Long): Boolean {
+        return db.hasItInDb(id)
     }
 }

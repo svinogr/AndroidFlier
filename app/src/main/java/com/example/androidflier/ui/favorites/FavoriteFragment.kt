@@ -51,6 +51,10 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
     private fun setRefreshLayout() {
         refreshLayout = binding.favoriteRefreshLayout
         refreshLayout.setOnRefreshListener(this)
+        refreshLayout.post{
+            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+            onRefresh()
+        }
     }
 
     override fun onResume() {
@@ -68,9 +72,9 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
 
         shops.shops.observe(viewLifecycleOwner, object : Observer<List<Shop>> {
             override fun onChanged(list: List<Shop>) {
-                refreshLayout.isRefreshing = true
                 adapter.listShops = list
                 adapter.notifyDataSetChanged()
+
                 refreshLayout.isRefreshing = false
             }
         })
@@ -82,8 +86,6 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
     }
 
     override fun onRefresh() {
-        refreshLayout.isRefreshing = true
-        shops.refresh()
-        refreshLayout.isRefreshing = false
+        shops.refreshData()
     }
 }

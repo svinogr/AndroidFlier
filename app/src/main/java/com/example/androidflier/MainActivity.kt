@@ -50,13 +50,13 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        GpsUtils(this).turnGPSOn(object : GpsUtils.OnGpsListener {
+/*        GpsUtils(this).turnGPSOn(object : GpsUtils.OnGpsListener {
 
             override fun gpsStatus(isGPSEnable: Boolean) {
                 isGPSEnabled = isGPSEnable
                 Log.i("gps", "gpsStatus $isGPSEnabled")
             }
-        })
+        })*/
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

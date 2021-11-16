@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -35,6 +36,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     private lateinit var progress: ProgressBar
     private lateinit var refreshLayout: SwipeRefreshLayout
 
+
     companion object {
         const val TAG = "DashboardFragment"
     }
@@ -51,8 +53,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
             ListModelFactory(requireActivity().application)
         ).get(TAG, DashboardViewModel::class.java)
 
-        setRecyclerView()
         setRefreshLayout()
+        setRecyclerView()
+
 
         return binding.root
     }
@@ -60,7 +63,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     private fun setRefreshLayout() {
         refreshLayout = binding.dashboardRefreshLayout
         refreshLayout.setOnRefreshListener(this)
-     //   refreshLayout.post { onRefresh() }
+        refreshLayout.post{
+            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+            onRefresh()
+        }
     }
 
     private fun setRecyclerView() {
@@ -72,29 +78,20 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         recyclerView.adapter = adapter
 
         shopObserver = Observer {
-            refreshLayout.isRefreshing = true
-
             adapter.listShops = it
             adapter.notifyDataSetChanged()
 
-            refreshLayout.isRefreshing = false
+            refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
         }
 
         shopsViewModel.shops.observe(
             viewLifecycleOwner, shopObserver
         )
 
-        refresh()
+        onRefresh()
     }
 
     override fun onRefresh() {
-        refresh()
-    }
-
-    fun refresh() {
-       // refreshLayout.isRefreshing = true
-       // refreshLayout.
-        shopsViewModel.refresh()
-       // refreshLayout.isRefreshing = false
+        shopsViewModel.refreshData()
     }
 }

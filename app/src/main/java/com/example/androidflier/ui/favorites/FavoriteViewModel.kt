@@ -8,21 +8,20 @@ import com.example.androidflier.model.Shop
 import com.example.androidflier.repo.localdb.LocalDataStorageable
 import com.example.androidflier.repo.localdb.ManagerLocalStorage
 import com.example.androidflier.ui.viewmodels.BaseShopViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class FavoriteViewModel(context: Application): BaseShopViewModel(context) {
     private val _shops = MutableLiveData<List<Shop>>()
     val shops: LiveData<List<Shop>> = _shops
 
-    init {
-        startInitialize()
-    }
+    override fun refreshData() {
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(delayRefresh)
 
-    override fun startInitialize() {
-        val flierApp = context as FlierApp
-        _shops.value = localDb.getAllFavoriteShops()
-    }
-
-    fun refresh() {
-        startInitialize()
+            _shops.postValue(localDb.getAllFavoriteShops())
+        }
     }
 }

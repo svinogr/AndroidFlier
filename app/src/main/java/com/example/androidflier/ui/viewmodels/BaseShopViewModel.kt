@@ -9,9 +9,10 @@ import com.example.androidflier.repo.ShopRepositoryable
 import com.example.androidflier.repo.localdb.LocalDataStorageable
 import com.example.androidflier.repo.retrofit.RetrofitInst
 
-abstract class BaseShopViewModel(open val context: Application): ViewModel() {
+abstract class BaseShopViewModel(val context: Application): ViewModel() {
     var shopRepo: ShopRepositoryable
     var localDb: LocalDataStorageable
+    final val delayRefresh: Long = 700
 
     init {
         val flierApp = context as FlierApp
@@ -19,5 +20,5 @@ abstract class BaseShopViewModel(open val context: Application): ViewModel() {
         localDb = flierApp.localDb
     }
 
-    abstract fun startInitialize()
+    abstract fun refreshData()
 }

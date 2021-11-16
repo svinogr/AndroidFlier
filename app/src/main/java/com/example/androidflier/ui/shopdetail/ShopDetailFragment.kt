@@ -58,6 +58,10 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
     private fun setRefreshLayout() {
         refreshLayout = binding.shopDetailRefreshLayout
         refreshLayout.setOnRefreshListener(this)
+        refreshLayout.post{
+            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+            onRefresh()
+        }
     }
 
     private fun setRecyclerView() {
@@ -68,7 +72,6 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
         recycler.adapter = adapter
 
         shop.shop.observe(viewLifecycleOwner) {
-            refreshLayout.isRefreshing = true
             adapter.stocks = it.stocks
             adapter.notifyDataSetChanged()
             binding.shopDetailFragmentTitleShop.text = it.title
@@ -79,6 +82,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
             if (it.favoriteStatus) btnFavorite.setImageResource(R.drawable.ic_heart_red) else btnFavorite.setImageResource(
                 R.drawable.ic_heart_white
             )
+
             refreshLayout.isRefreshing = false
         }
     }
@@ -91,19 +95,6 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
                 shop.changeFavoriteStatus()
             }
         })
-    }
-
-    private fun changeStatusFavoriteShop(shop: Shop) {
-        if (shop.favoriteStatus) {
-            this.shop.deleteFromLocalDb(shop)
-            this.shop.shop.value?.favoriteStatus = false
-
-        } else {
-            this.shop.saveToLocalDb(shop)
-            this.shop.shop.value?.favoriteStatus = true
-        }
-
-        Log.d(TAG, shop.favoriteStatus.toString())
     }
 
     private fun setBottomSheetBehavior() {
@@ -126,8 +117,6 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
     }
 
     override fun onRefresh() {
-        refreshLayout.isRefreshing = false
-        shop.refresh()
-        refreshLayout.isRefreshing = true
+        shop.refreshData()
     }
 }

@@ -7,4 +7,5 @@ interface LocalDataStorageable {
     fun save(shop: Shop)
     fun delete(shop: Shop): Int
     fun getShopById(id: Long): Shop?
+    fun hasItInDd(id: Long): Boolean
 }
