@@ -1,6 +1,7 @@
 package com.example.androidflier.ui.nearest
 
 import android.app.Application
+import android.content.Context
 import android.provider.Settings
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -15,7 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class NearestListShopsViewModel(context: Application) : BaseShopViewModel(context) {
+class NearestListShopsViewModel(context: Context) : BaseShopViewModel(context) {
     private val _shops = MutableLiveData<List<Shop>>()
     val shops: LiveData<List<Shop>> = _shops
 

@@ -47,18 +47,41 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Log.d("ref", "onCreateView")
         _binding = FragmentDashboardBinding.inflate(inflater, container, false)
 
-        shopsViewModel = ViewModelProvider(
-            requireActivity(),
-            ListModelFactory(requireActivity().application)
-        ).get(TAG, DashboardViewModel::class.java)
+
 
         setRefreshLayout()
         setRecyclerView()
 
 
         return binding.root
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.d("ref", "onCreate")
+        shopsViewModel = ViewModelProvider(
+            requireActivity(),
+            ListModelFactory(this.requireContext())
+        ).get(TAG, DashboardViewModel::class.java)
+
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("ref", "onResume")
+
+  /*      refreshLayout.post{
+            Log.d("ref", "post")
+
+            //   refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+           // onRefresh()
+            shopsViewModel.refreshData()
+        }*/
+        onRefresh()
+
     }
 
     private fun setRefreshLayout() {
@@ -75,9 +98,13 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         recyclerView.adapter = adapter
 
         shopObserver = Observer {
+            Log.d("ref", "rec1 ${adapter.listShops.size}")
             adapter.listShops = it
             adapter.notifyDataSetChanged()
+            Log.d("ref", "rec2 ${adapter.listShops.size}")
             Log.d("ref", "setRecyclerView")
+            Log.d("ref", "rec $it")
+
             refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
         }
 
@@ -85,13 +112,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
             viewLifecycleOwner, shopObserver
         )
 
-        refreshLayout.post{
-            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
-            onRefresh()
-        }
     }
 
     override fun onRefresh() {
+        refreshLayout.isRefreshing = true
         Log.d("ref", "onRefresh")
         shopsViewModel.refreshData()
     }

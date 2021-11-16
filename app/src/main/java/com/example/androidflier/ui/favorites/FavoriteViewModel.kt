@@ -1,6 +1,7 @@
 package com.example.androidflier.ui.favorites
 
 import android.app.Application
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.androidflier.FlierApp
@@ -13,7 +14,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FavoriteViewModel(context: Application): BaseShopViewModel(context) {
+class FavoriteViewModel(context: Context): BaseShopViewModel(context) {
     private val _shops = MutableLiveData<List<Shop>>()
     val shops: LiveData<List<Shop>> = _shops
 
