@@ -21,7 +21,7 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
     val shops: LiveData<List<Shop>> = _shops
     private val _loading = MutableLiveData<Boolean>()
 
-    fun allShops() {
+   private fun allShops() {
       GlobalScope.launch (Dispatchers.IO){
           delay(delayRefresh)
 

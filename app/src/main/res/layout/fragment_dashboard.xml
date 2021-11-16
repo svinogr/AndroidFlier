@@ -10,11 +10,12 @@
         android:id="@+id/dashboard_refresh_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/dashboard_recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layoutAnimation="@anim/layout_animation"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:layout_editor_absoluteX="-16dp"
             tools:layout_editor_absoluteY="-316dp" />
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

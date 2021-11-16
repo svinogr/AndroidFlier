@@ -1,6 +1,7 @@
 package com.example.androidflier.adapter.holder
 
 import android.view.View
+import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.core.os.bundleOf
 import androidx.navigation.findNavController
@@ -21,9 +22,13 @@ class ShopViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     fun bind(shop: Shop) {
         title.text = shop.title
         address.text = shop.address
-        itemView.setOnClickListener(){
-            it.findNavController().navigate(R.id.shopDetailFragment, bundleOf(
-                ShopDetailFragment.ARG_ID_LONG to shop.id))
+        itemView.setOnClickListener() {
+            it.findNavController().navigate(
+                R.id.shopDetailFragment, bundleOf(
+                    ShopDetailFragment.ARG_ID_LONG to shop.id
+                )
+            )
         }
+
     }
 }

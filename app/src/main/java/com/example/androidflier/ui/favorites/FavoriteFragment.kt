@@ -42,8 +42,8 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
 
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 
-        setRecyclerView()
         setRefreshLayout()
+        setRecyclerView()
 
         return binding.root
     }
@@ -51,16 +51,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
     private fun setRefreshLayout() {
         refreshLayout = binding.favoriteRefreshLayout
         refreshLayout.setOnRefreshListener(this)
-        refreshLayout.post{
-            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
-            onRefresh()
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        onRefresh()
-    }
+          }
 
     private fun setRecyclerView() {
         adapter = ShopCardAdapter()
@@ -78,6 +69,11 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
                 refreshLayout.isRefreshing = false
             }
         })
+
+        refreshLayout.post{
+            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+            onRefresh()
+        }
     }
 
     override fun onDestroyView() {

@@ -49,10 +49,10 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
 
         bottomSheetLayout = binding.bottomSheet.bottomSheet
 
-        setRefreshLayout()
         setBottomSheetBehavior()
         setFavoriteBtn()
         setRecyclerView()
+        setRefreshLayout()
     }
 
     private fun setRefreshLayout() {

@@ -20,6 +20,7 @@ import com.example.androidflier.databinding.FragmentDashboardBinding
 import com.example.androidflier.model.Shop
 import com.example.androidflier.repo.localdb.ManagerLocalStorage
 import com.example.androidflier.ui.viewmodels.ListModelFactory
+import okhttp3.internal.notify
 
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard),
@@ -63,11 +64,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     private fun setRefreshLayout() {
         refreshLayout = binding.dashboardRefreshLayout
         refreshLayout.setOnRefreshListener(this)
-        refreshLayout.post{
-            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
-            onRefresh()
-        }
-    }
+          }
 
     private fun setRecyclerView() {
         recyclerView = binding.dashboardRecyclerView
@@ -80,7 +77,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         shopObserver = Observer {
             adapter.listShops = it
             adapter.notifyDataSetChanged()
-
+            Log.d("ref", "setRecyclerView")
             refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
         }
 
@@ -88,10 +85,14 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
             viewLifecycleOwner, shopObserver
         )
 
-        onRefresh()
+        refreshLayout.post{
+            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+            onRefresh()
+        }
     }
 
     override fun onRefresh() {
+        Log.d("ref", "onRefresh")
         shopsViewModel.refreshData()
     }
 }
