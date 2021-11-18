@@ -16,24 +16,31 @@ import retrofit2.Callback
 import retrofit2.Response
 
 class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
-
     private val _shops = MutableLiveData<List<Shop>>()
     val shops: LiveData<List<Shop>> = _shops
-    private val _loading = MutableLiveData<Boolean>()
 
-   private fun allShops() {
-      GlobalScope.launch (Dispatchers.IO){
-          delay(delayRefresh)
+    private fun allShops() {
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(delayRefresh)
 
-          shopRepo.getAllShops().enqueue(object : Callback<List<Shop>> {
-              override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
-              }
+            shopRepo.getAllShops().enqueue(object : Callback<List<Shop>> {
+                override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
+                    Log.d("DashboardViewModel", "fail: $t.toString()")
+                    _message.postValue(t.message)
+                    _shops.postValue(listOf())
+                }
 
-              override fun onResponse(call: Call<List<Shop>>, response: Response<List<Shop>>) {
-                  _shops.postValue(response.body())
-              }
-          })
-      }
+                override fun onResponse(call: Call<List<Shop>>, response: Response<List<Shop>>) {
+                    Log.d("DashboardViewModel", "resp: $response.toString()")
+                    if (response.code() != 200) {
+                        message.postValue(response.message())
+                        _shops.postValue(listOf())
+                    } else {
+                        _shops.postValue(response.body())
+                    }
+                }
+            })
+        }
     }
 
     override fun refreshData() {

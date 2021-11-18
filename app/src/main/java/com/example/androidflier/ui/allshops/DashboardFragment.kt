@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -34,6 +35,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     private lateinit var shopsViewModel: DashboardViewModel
     private lateinit var adapter: ShopCardAdapter
     private lateinit var shopObserver: Observer<List<Shop>>
+    private lateinit var messageObserver: Observer<String>
     private lateinit var progress: ProgressBar
     private lateinit var refreshLayout: SwipeRefreshLayout
 
@@ -55,16 +57,47 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         ).get(TAG, DashboardViewModel::class.java)
 
         setRefreshLayout()
+        setObservers()
         setRecyclerView()
 
+        refreshLayout.post {
+            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+            onRefresh()
+        }
 
         return binding.root
+    }
+
+    private fun setObservers() {
+        shopObserver = Observer {
+            if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                adapter.listShops = it
+                adapter.notifyDataSetChanged()
+                recyclerView.scheduleLayoutAnimation()
+                Log.d("ref", "setRecyclerView")
+                refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
+            }
+        }
+
+        shopsViewModel.shops.observe(
+            viewLifecycleOwner, shopObserver
+        )
+
+        messageObserver = Observer {
+            if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
+            }
+        }
+
+        shopsViewModel.message.observe(viewLifecycleOwner, messageObserver)
+
     }
 
     private fun setRefreshLayout() {
         refreshLayout = binding.dashboardRefreshLayout
         refreshLayout.setOnRefreshListener(this)
-          }
+    }
 
     private fun setRecyclerView() {
         recyclerView = binding.dashboardRecyclerView
@@ -73,26 +106,18 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
         adapter = ShopCardAdapter()
         recyclerView.adapter = adapter
-
-        shopObserver = Observer {
-            adapter.listShops = it
-            adapter.notifyDataSetChanged()
-            Log.d("ref", "setRecyclerView")
-            refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
-        }
-
-        shopsViewModel.shops.observe(
-            viewLifecycleOwner, shopObserver
-        )
-
-        refreshLayout.post{
-            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
-            onRefresh()
-        }
     }
 
     override fun onRefresh() {
         Log.d("ref", "onRefresh")
         shopsViewModel.refreshData()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+
+        shopsViewModel.shops.removeObserver(shopObserver)
+        shopsViewModel.message.removeObserver(messageObserver)
+        _binding = null
     }
 }

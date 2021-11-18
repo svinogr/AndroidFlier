@@ -21,7 +21,12 @@ class FavoriteViewModel(context: Application): BaseShopViewModel(context) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
-            _shops.postValue(localDb.getAllFavoriteShops())
+            try {
+                _shops.postValue(localDb.getAllFavoriteShops())
+            } catch (e: Exception) {
+                _message.postValue(e.message)
+                _shops.postValue(listOf())
+            }
         }
     }
 }

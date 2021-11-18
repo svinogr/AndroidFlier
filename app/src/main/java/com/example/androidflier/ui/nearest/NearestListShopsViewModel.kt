@@ -25,11 +25,19 @@ class NearestListShopsViewModel(context: Application) : BaseShopViewModel(contex
 
             shopRepo.getAllNearestShops().enqueue(object : Callback<List<Shop>> {
                 override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
-                    Log.d("TAG", t.message.toString())
+                    Log.d("NearestListShopsViewModel", "fail: $t.toString()")
+                    _message.postValue(t.message)
+                    _shops.postValue(listOf())
                 }
 
                 override fun onResponse(call: Call<List<Shop>>, response: Response<List<Shop>>) {
-                    _shops.postValue(response.body())
+                    Log.d("NearestListShopsViewModel", "resp: $response.toString()")
+                    if (response.code() != 200) {
+                        message.postValue(response.message())
+                        _shops.postValue(listOf())
+                    } else {
+                        _shops.postValue(response.body())
+                    }
                 }
             })
         }

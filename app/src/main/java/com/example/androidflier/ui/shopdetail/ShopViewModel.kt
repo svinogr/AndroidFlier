@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.androidflier.model.Shop
+import com.example.androidflier.model.Stock
 import com.example.androidflier.ui.viewmodels.BaseShopViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -26,21 +27,36 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
             shopRepo.getShopWithStocks(id).enqueue(object : Callback<Shop> {
                 override fun onFailure(call: Call<Shop>, t: Throwable) {
                     Log.d("TAG", t.message.toString())
+                    Log.d("DashboardViewModel", "fail: $t.toString()")
+                    _message.postValue(t.message)
+                    _shop.postValue(getNullShop())
                 }
 
                 override fun onResponse(call: Call<Shop>, response: Response<Shop>) {
-                    val shop = response.body()
 
-                    if (shop != null) {
-                        val shopIs = localDb.hasItInDd(id)
 
-                        if (shopIs) {
-                            shop.favoriteStatus = true
+                    Log.d("DashboardViewModel", "resp: $response.toString()")
+                    if (response.code() != 200) {
+                        message.postValue(response.message())
+                        _shop.postValue(getNullShop())
+                    } else {
+                        val shop = response.body()
+
+                        if (shop != null) {
+                            val shopIs = localDb.hasItInDd(id)
+
+                            if (shopIs) {
+                                shop.favoriteStatus = true
+                            }
+
+                            _shop.postValue(shop!!)
+
                         }
 
-                        _shop.postValue(shop!!)
+
                     }
                 }
+
             })
         }
     }
@@ -63,5 +79,24 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
 
     override fun refreshData() {
         getShop()
+    }
+
+    private fun getNullShop(): Shop {
+        return Shop(
+            0,
+            created = "",
+            updated = "",
+            status = "",
+            userId = 0,
+            coordLng = 0.0,
+            coordLat = 0.0,
+            title = "",
+            address = "",
+            description = "",
+            url = "",
+            img = "",
+            favoriteStatus = false,
+            stocks = mutableListOf()
+        )
     }
 }
