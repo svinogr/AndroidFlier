@@ -6,8 +6,9 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
-const val BASE_URL = "http://192.168.1.47:8081/"
+const val BASE_URL = "http://192.168.43.214:8081/"
 class RetrofitInst {
     lateinit var shopApi: ShopApi
     lateinit var stockApi: StockApi
@@ -20,6 +21,9 @@ class RetrofitInst {
             interceptor.level = HttpLoggingInterceptor.Level.BODY
 
             val okHttpClient = OkHttpClient.Builder()
+                .connectTimeout(20, TimeUnit.MILLISECONDS)
+                .readTimeout(5, TimeUnit.MILLISECONDS)
+                .readTimeout(5, TimeUnit.MILLISECONDS)
                 .addInterceptor(interceptor)
                 .build()
 

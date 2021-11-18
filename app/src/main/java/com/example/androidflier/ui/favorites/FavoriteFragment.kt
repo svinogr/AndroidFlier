@@ -21,6 +21,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
 
     private lateinit var shops: FavoriteViewModel
     private var _binding: FragmentFavoriteBinding? = null
+    private val TAG = "FavoriteFragment"
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -38,7 +39,7 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
             ViewModelProvider(
                 requireActivity(),
                 ListModelFactory(requireActivity().application)
-            ).get(FavoriteViewModel::class.java)
+            ).get(TAG, FavoriteViewModel::class.java)
 
         _binding = FragmentFavoriteBinding.inflate(inflater, container, false)
 

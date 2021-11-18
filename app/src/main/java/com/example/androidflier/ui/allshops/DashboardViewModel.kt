@@ -22,16 +22,24 @@ class DashboardViewModel(context: Context) : BaseShopViewModel(context) {
     val shops: LiveData<List<Shop>> = _shops
     private val _loading = MutableLiveData<Boolean>()
 
+  /*  init {
+        allShops()
+    }*/
+
    private fun allShops() {
       GlobalScope.launch (Dispatchers.IO){
           delay(delayRefresh)
 
           shopRepo.getAllShops().enqueue(object : Callback<List<Shop>> {
               override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
+                  Log.d("TAG", t.message.toString())
+                  Log.d("TAG", call.toString())
+                  _shops.value = listOf()
               }
 
               override fun onResponse(call: Call<List<Shop>>, response: Response<List<Shop>>) {
                 //  _shops.postValue(response.body())
+                  Log.d("ref", "call onResponse")
                   _shops.value  = response.body()
               }
           })

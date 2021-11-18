@@ -40,7 +40,7 @@ class NearestFragment : Fragment(R.layout.fragment_nearest) {
 
         _binding = FragmentNearestBinding.bind(view)
         shopsViewModel = ViewModelProvider(requireActivity(), ListModelFactory(requireActivity().application)).get(
-            "1",
+            TAG,
             NearestListShopsViewModel::class.java
         )
 

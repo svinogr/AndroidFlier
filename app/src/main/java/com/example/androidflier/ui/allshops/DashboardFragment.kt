@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -55,8 +56,34 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         setRefreshLayout()
         setRecyclerView()
 
+        /*     refreshLayout.post{
+                 Log.d("ref", "post")
+
+                 refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+                 // onRefresh()
+                 shopsViewModel.refreshData()
+             }*/
+        //onRefresh()
+
+       /* if (shopsViewModel.shops.value?.size == 0) {
+            onRefresh()
+        }
+*/
+        refreshLayout.post {
+            Log.d("ref", "post")
+
+            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+             onRefresh()
+         //  shopsViewModel.refreshData()
+        }
 
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        setObserver()
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,27 +94,19 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
             ListModelFactory(this.requireContext())
         ).get(TAG, DashboardViewModel::class.java)
 
+
+
     }
 
     override fun onResume() {
         super.onResume()
         Log.d("ref", "onResume")
-
-  /*      refreshLayout.post{
-            Log.d("ref", "post")
-
-            //   refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
-           // onRefresh()
-            shopsViewModel.refreshData()
-        }*/
-        onRefresh()
-
     }
 
     private fun setRefreshLayout() {
         refreshLayout = binding.dashboardRefreshLayout
         refreshLayout.setOnRefreshListener(this)
-          }
+    }
 
     private fun setRecyclerView() {
         recyclerView = binding.dashboardRecyclerView
@@ -96,22 +115,46 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
         adapter = ShopCardAdapter()
         recyclerView.adapter = adapter
+    }
 
+    private fun setObserver() {
         shopObserver = Observer {
-            Log.d("ref", "rec1 ${adapter.listShops.size}")
-            adapter.listShops = it
-            adapter.notifyDataSetChanged()
-            Log.d("ref", "rec2 ${adapter.listShops.size}")
-            Log.d("ref", "setRecyclerView")
-            Log.d("ref", "rec $it")
+            if(viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
 
-            refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
+                Log.d("ref", "rec1 ${adapter.listShops.size}")
+                adapter.listShops = it
+                adapter.notifyDataSetChanged()
+                recyclerView.scheduleLayoutAnimation()
+                Log.d("ref", "rec2 ${adapter.listShops.size}")
+                Log.d("ref", "setRecyclerView")
+                Log.d("ref", "rec $it")
+                refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
+            }
+
+
         }
 
         shopsViewModel.shops.observe(
-            viewLifecycleOwner, shopObserver
+            viewLifecycleOwnerLiveData.value!!, shopObserver
         )
+    }
 
+    override fun onStop() {
+        //  adapter.listShops = mutableListOf()
+        // adapter.notifyDataSetChanged()
+        super.onStop()
+        Log.d("ref", "onStop")
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d("ref", "onDestroyView")
+       // shopsViewModel.shops.removeObserver(shopObserver)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Log.d("ref", "onDestroy")
     }
 
     override fun onRefresh() {
