@@ -6,37 +6,40 @@
     android:layout_height="match_parent"
     tools:context="ui.allshops.DashboardFragment">
 
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/dashboard_refresh_layout"
+    <androidx.appcompat.widget.SearchView
+        android:id="@+id/dashboard_seacrh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:paddingBottom="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dashboard_recycler_tab_view"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layoutAnimation="@anim/layout_animation"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:layout_constraintTop_toBottomOf="@id/dashboard_seacrh" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/dashboard_recycler_tab_view">
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/dashboard_refresh_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/dashboard_recycler_tab_view"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:layoutAnimation="@anim/layout_animation"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/dashboard_recycler_view"
-                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/dashboard_recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
+                android:layout_height="match_parent"
                 android:layoutAnimation="@anim/layout_animation"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/dashboard_recycler_tab_view" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
