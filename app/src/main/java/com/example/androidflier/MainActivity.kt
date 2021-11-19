@@ -20,6 +20,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.androidflier.databinding.ActivityMainBinding
 import com.example.androidflier.ui.viewmodels.GpsUtils
+import com.google.android.material.tabs.TabLayout
 
 const val LOCATION_REQUEST = 100
 const val GPS_REQUEST = 101
@@ -50,7 +51,7 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-/*        GpsUtils(this).turnGPSOn(object : GpsUtils.OnGpsListener {
+  /*        GpsUtils(this).turnGPSOn(object : GpsUtils.OnGpsListener {
 
             override fun gpsStatus(isGPSEnable: Boolean) {
                 isGPSEnabled = isGPSEnable

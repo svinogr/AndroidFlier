@@ -1,5 +1,6 @@
 package com.example.androidflier.ui.allshops
 
+import android.icu.lang.UCharacter
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -17,8 +18,10 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.androidflier.R
 import com.example.androidflier.adapter.ShopCardAdapter
+import com.example.androidflier.adapter.TabCardAdapter
 import com.example.androidflier.databinding.FragmentDashboardBinding
 import com.example.androidflier.model.Shop
+import com.example.androidflier.model.Tab
 import com.example.androidflier.repo.localdb.ManagerLocalStorage
 import com.example.androidflier.ui.viewmodels.ListModelFactory
 import okhttp3.internal.notify
@@ -32,11 +35,13 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerViewTab: RecyclerView
     private lateinit var shopsViewModel: DashboardViewModel
     private lateinit var adapter: ShopCardAdapter
+    private lateinit var adapterTab: TabCardAdapter
     private lateinit var shopObserver: Observer<List<Shop>>
     private lateinit var messageObserver: Observer<String>
-    private lateinit var progress: ProgressBar
+    private lateinit var tabsObserver: Observer<List<Tab>>
     private lateinit var refreshLayout: SwipeRefreshLayout
 
 
@@ -60,10 +65,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         setObservers()
         setRecyclerView()
 
-        refreshLayout.post {
-            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
-            onRefresh()
-        }
+
 
         return binding.root
     }
@@ -92,6 +94,29 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
         shopsViewModel.message.observe(viewLifecycleOwner, messageObserver)
 
+        ////testsection
+        tabsObserver = Observer {
+            Log.d("DashboardViewModel state",  viewLifecycleOwner.lifecycle.currentState.toString())
+            if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                Log.d("TAg", it.toString())
+                adapterTab.listTab = it
+                adapterTab.notifyDataSetChanged()
+                recyclerViewTab.scheduleLayoutAnimation()
+            }
+        }
+
+        shopsViewModel.tab.observe(viewLifecycleOwner, tabsObserver)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d("DashboardViewModel state on",  viewLifecycleOwner.lifecycle.currentState.toString())
+
+        refreshLayout.post {
+            refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
+            onRefresh()
+        }
+
     }
 
     private fun setRefreshLayout() {
@@ -106,11 +131,20 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
         adapter = ShopCardAdapter()
         recyclerView.adapter = adapter
+
+        recyclerViewTab = binding.dashboardRecyclerTabView
+        val TLManager = LinearLayoutManager(view?.context)
+        TLManager.orientation = LinearLayoutManager.HORIZONTAL
+        recyclerViewTab.layoutManager = TLManager
+
+        adapterTab = TabCardAdapter()
+        recyclerViewTab.adapter = adapterTab
     }
 
     override fun onRefresh() {
         Log.d("ref", "onRefresh")
         shopsViewModel.refreshData()
+        shopsViewModel.getTab()
     }
 
     override fun onDestroyView() {
@@ -118,6 +152,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
         shopsViewModel.shops.removeObserver(shopObserver)
         shopsViewModel.message.removeObserver(messageObserver)
+        shopsViewModel.tab.removeObserver(tabsObserver)
         _binding = null
     }
 }
