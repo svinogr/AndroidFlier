@@ -7,9 +7,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidflier.R
+import com.example.androidflier.adapter.TabCardAdapter
 import com.example.androidflier.model.Tab
 
-class TabViewHolder(itemView: View, val adapter: Selectable) : RecyclerView.ViewHolder(itemView),
+class TabViewHolder(itemView: View, val adapter: TabCardAdapter) : RecyclerView.ViewHolder(itemView),
     View.OnClickListener {
     private var textView: TextView = itemView.findViewById(R.id.tab_layout_text)
     private lateinit var tab: Tab
@@ -31,12 +32,11 @@ class TabViewHolder(itemView: View, val adapter: Selectable) : RecyclerView.View
 
     override fun onClick(v: View?) {
         tab.selected = !tab.selected
-        adapter.changeSelectedItem(tab)
-        Log.d("Clic", tab.title)
+        adapter.selectTab(tab)
     }
 
-    interface Selectable {
-        fun changeSelectedItem(tab: Tab)
+    interface TabSelectable {
+        fun withTab(tab: Tab)
     }
 }
 

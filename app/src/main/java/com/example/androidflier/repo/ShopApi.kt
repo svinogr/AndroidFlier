@@ -43,4 +43,15 @@ interface ShopApi {
     )
     @GET(value = "/api/shop/{shopId}")
     fun getShopWithStocks(@Path("shopId") shopId: Long): Call<Shop>
+
+    /**
+     * returns shops are searched by query text
+     * api: "./api/shop/search"
+     */
+    @Headers(
+        "Accept: application/json",
+        "Content-type:application/json"
+    )
+    @GET(value = "/api/shop/search")
+    fun search(@Query("text") query: String): Call<List<Shop>>
 }

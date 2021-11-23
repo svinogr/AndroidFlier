@@ -41,4 +41,8 @@ class ShopRepository private constructor(): ShopRepositoryable {
    override fun getShopWithStocks(shopId: Long): Call<Shop> {
         return shopApi.getShopWithStocks(shopId)
     }
+
+    override fun searchShops(query: String): Call<List<Shop>> {
+        return shopApi.search(query)
+    }
 }

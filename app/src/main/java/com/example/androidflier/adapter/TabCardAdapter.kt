@@ -7,8 +7,11 @@ import com.example.androidflier.R
 import com.example.androidflier.adapter.holder.TabViewHolder
 import com.example.androidflier.model.Tab
 
-class TabCardAdapter(var listTab: List<Tab> = mutableListOf()) :
-    RecyclerView.Adapter<TabViewHolder>(), TabViewHolder.Selectable {
+class TabCardAdapter(
+    var listTab: List<Tab> = mutableListOf(),
+    var tabSelectable: TabViewHolder.TabSelectable
+) :
+    RecyclerView.Adapter<TabViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, p1: Int): TabViewHolder {
         val inflate =
             LayoutInflater.from(parent.context).inflate(R.layout.tab_layout, parent, false)
@@ -23,7 +26,7 @@ class TabCardAdapter(var listTab: List<Tab> = mutableListOf()) :
         return listTab.size
     }
 
-    override fun changeSelectedItem(tab: Tab) {
+     fun selectTab(tab: Tab) {
         listTab.forEach {
             if (tab.id == it.id) {
                 it.selected = tab.selected
@@ -32,6 +35,9 @@ class TabCardAdapter(var listTab: List<Tab> = mutableListOf()) :
             }
         }
 
+        tabSelectable.withTab(tab)
+
         notifyDataSetChanged()
     }
+
 }

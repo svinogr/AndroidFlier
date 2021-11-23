@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.androidflier.model.Shop
+import com.example.androidflier.model.Tab
 import com.example.androidflier.repo.LocationRepo
 import com.example.androidflier.ui.viewmodels.BaseShopViewModel
 import kotlinx.coroutines.Dispatchers
@@ -18,7 +19,9 @@ import retrofit2.Response
 
 class NearestListShopsViewModel(context: Application) : BaseShopViewModel(context) {
     private val _shops = MutableLiveData<List<Shop>>()
+    private val _tabs = MutableLiveData<List<Tab>>()
     val shops: LiveData<List<Shop>> = _shops
+    val tabs: LiveData<List<Tab>> = _tabs
     private val locationReposable = LocationRepo.getInstance(context)
 
     @SuppressLint("MissingPermission")
@@ -60,5 +63,27 @@ class NearestListShopsViewModel(context: Application) : BaseShopViewModel(contex
 
     override fun refreshData() {
         allNearestShops()
+        allTabs()
+    }
+
+    private fun allTabs() {
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(delayRefresh)
+
+            Log.d("DashboardViewModel", " allTabs")
+
+            val testString: List<Tab> = listOf(
+                Tab(1,"строка"),
+                Tab(2,"строка 2"),
+                Tab(3,"строка 3"),
+                Tab(4,"строка 4"),
+                Tab(5,"строка5"),
+                Tab(6,"строка 6"),
+                Tab(7,"строка 7"),
+                Tab(8,"строка 8")
+            )
+            _tabs.postValue(testString)
+            Log.d("DashboardViewModel", " allTabs")
+        }
     }
 }

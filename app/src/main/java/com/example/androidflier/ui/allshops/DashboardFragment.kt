@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -14,6 +15,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.androidflier.R
 import com.example.androidflier.adapter.ShopCardAdapter
 import com.example.androidflier.adapter.TabCardAdapter
+import com.example.androidflier.adapter.holder.TabViewHolder
 import com.example.androidflier.databinding.FragmentDashboardBinding
 import com.example.androidflier.model.Shop
 import com.example.androidflier.model.Tab
@@ -21,7 +23,7 @@ import com.example.androidflier.ui.viewmodels.ListModelFactory
 
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard),
-    SwipeRefreshLayout.OnRefreshListener {
+    SwipeRefreshLayout.OnRefreshListener, TabViewHolder.TabSelectable {
     private var _binding: FragmentDashboardBinding? = null
 
     // This property is only valid between onCreateView and
@@ -36,7 +38,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     private lateinit var messageObserver: Observer<String>
     private lateinit var tabsObserver: Observer<List<Tab>>
     private lateinit var refreshLayout: SwipeRefreshLayout
-
+    private lateinit var searchView: SearchView
 
     companion object {
         const val TAG = "DashboardFragment"
@@ -57,8 +59,27 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         setRefreshLayout()
         setObservers()
         setRecyclerView()
+        setSearchView()
 
         return binding.root
+    }
+
+    private fun setSearchView() {
+        searchView = binding.dashboardSeacrh
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+               shopsViewModel.search(query)
+
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+
+                Log.d("search", newText.let { newText.toString() })
+
+                return true
+            }
+        })
     }
 
     private fun setObservers() {
@@ -85,7 +106,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
         shopsViewModel.message.observe(viewLifecycleOwner, messageObserver)
 
-        ////testsection
+
         tabsObserver = Observer {
             Log.d("DashboardViewModel state", viewLifecycleOwner.lifecycle.currentState.toString())
             if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
@@ -128,7 +149,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         TLManager.orientation = LinearLayoutManager.HORIZONTAL
         recyclerViewTab.layoutManager = TLManager
 
-        adapterTab = TabCardAdapter()
+        adapterTab = TabCardAdapter(tabSelectable = this)
         recyclerViewTab.adapter = adapterTab
     }
 
@@ -145,5 +166,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         shopsViewModel.message.removeObserver(messageObserver)
         shopsViewModel.tab.removeObserver(tabsObserver)
         _binding = null
+    }
+
+    override fun withTab(tab: Tab) {
+        Log.d("CallbackTab", tab.title)
     }
 }

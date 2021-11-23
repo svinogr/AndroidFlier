@@ -22,11 +22,14 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.androidflier.R
 import com.example.androidflier.adapter.ShopCardAdapter
+import com.example.androidflier.adapter.TabCardAdapter
+import com.example.androidflier.adapter.holder.TabViewHolder
 import com.example.androidflier.databinding.FragmentNearestBinding
 import com.example.androidflier.model.Shop
+import com.example.androidflier.model.Tab
 import com.example.androidflier.ui.viewmodels.ListModelFactory
 
-class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.OnRefreshListener {
+class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.OnRefreshListener, TabViewHolder.TabSelectable {
 
     private var _binding: FragmentNearestBinding? = null
     private val requestFeatureLauncher = registerForActivityResult(
@@ -38,10 +41,13 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
     // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
+    private lateinit var recyclerViewTab: RecyclerView
     private lateinit var shopsViewModel: NearestListShopsViewModel
     private lateinit var adapter: ShopCardAdapter
+    private lateinit var adapterTab: TabCardAdapter
     private lateinit var shopObserver: Observer<List<Shop>>
     private lateinit var messageObserver: Observer<String>
+    private lateinit var tabsObserver: Observer<List<Tab>>
     private lateinit var refreshLayout: SwipeRefreshLayout
 
     companion object {
@@ -135,6 +141,14 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
 
         adapter = ShopCardAdapter()
         recyclerView.adapter = adapter
+
+        recyclerViewTab = binding.nearestRecyclerTabView
+        val TLManager = LinearLayoutManager(view?.context)
+        TLManager.orientation = LinearLayoutManager.HORIZONTAL
+        recyclerViewTab.layoutManager = TLManager
+
+        adapterTab = TabCardAdapter(tabSelectable = this)
+        recyclerViewTab.adapter = adapterTab
     }
 
     private fun setObservers() {
@@ -159,6 +173,19 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
         }
 
         shopsViewModel.message.observe(viewLifecycleOwner, messageObserver)
+
+
+        tabsObserver = Observer {
+            Log.d("DashboardViewModel state", viewLifecycleOwner.lifecycle.currentState.toString())
+            if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                Log.d("TAg", it.toString())
+                adapterTab.listTab = it
+                adapterTab.notifyDataSetChanged()
+                recyclerViewTab.scheduleLayoutAnimation()
+            }
+        }
+
+        shopsViewModel.tabs.observe(viewLifecycleOwner, tabsObserver)
     }
 
     private fun setRefreshLayout() {
@@ -176,5 +203,9 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
     override fun onRefresh() {
         Log.d("ref", "onRefresh")
         requestFeatureLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+    }
+
+    override fun withTab(tab: Tab) {
+        Log.d("callbacktab", tab.title)
     }
 }

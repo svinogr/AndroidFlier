@@ -22,8 +22,6 @@ import android.view.MenuItem
 import android.view.Menu
 
 
-
-
 class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
     private val _shops = MutableLiveData<List<Shop>>()
     val shops: LiveData<List<Shop>> = _shops
@@ -61,14 +59,14 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
             Log.d("DashboardViewModel", " allTabs")
 
             val testString: List<Tab> = listOf(
-                Tab(1,"строка"),
-                Tab(2,"строка 2"),
-                Tab(3,"строка 3"),
-                Tab(4,"строка 4"),
-                Tab(5,"строка5"),
-                Tab(6,"строка 6"),
-                Tab(7,"строка 7"),
-                Tab(8,"строка 8")
+                Tab(1, "строка"),
+                Tab(2, "строка 2"),
+                Tab(3, "строка 3"),
+                Tab(4, "строка 4"),
+                Tab(5, "строка5"),
+                Tab(6, "строка 6"),
+                Tab(7, "строка 7"),
+                Tab(8, "строка 8")
             )
             _tabs.postValue(testString)
             Log.d("DashboardViewModel", " allTabs")
@@ -84,4 +82,34 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
     fun getTab() {
         allTabs()
     }
+
+    fun search(query: String?) {
+        Log.d("DashboardViewModel", "$query")
+
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(delayRefresh)
+
+            shopRepo.searchShops(query!!).enqueue(object : Callback<List<Shop>> {
+                override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
+                    Log.d("DashboardViewModel", "fail: $t.toString()")
+                    _message.postValue(t.message)
+                    _shops.postValue(listOf())
+                }
+
+                override fun onResponse(
+                    call: Call<List<Shop>>,
+                    response: Response<List<Shop>>
+                ) {
+                    Log.d("DashboardViewModel", "resp: $response.toString()")
+                    if (response.code() != 200) {
+                        message.postValue(response.message())
+                        _shops.postValue(listOf())
+                    } else {
+                        _shops.postValue(response.body())
+                    }
+                }
+            })
+        }
+    }
+
 }
