@@ -1,5 +1,7 @@
 package com.example.androidflier.repo
 
+import android.location.Location
+import android.util.Log
 import com.example.androidflier.model.Coord
 import com.example.androidflier.model.Shop
 import com.example.androidflier.repo.retrofit.RetrofitInst
@@ -25,10 +27,14 @@ class ShopRepository private constructor(): ShopRepositoryable {
         return shopApi.getAllShop()
     }
 
-    override fun getAllNearestShops(): Call<List<Shop>> {
+    override fun getAllNearestShops(location: Location): Call<List<Shop>> {
         //TODO заменить на пполучение координат
-        val coord = Coord(-57.5, -25.3)
+        Log.d("getAllNearestShops", "${location.latitude} ${location.longitude}")
+
+        //val coord = Coord(-57.5, -25.3)
+        val coord = Coord(location.longitude, location.latitude)
        //TODO
+       // return shopApi.getAllNearestShop(coord.lng, coord.lat)
         return shopApi.getAllNearestShop(coord.lng, coord.lat)
     }
 

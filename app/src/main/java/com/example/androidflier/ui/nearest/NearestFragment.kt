@@ -1,12 +1,18 @@
 package com.example.androidflier.ui.nearest
 
-import android.database.sqlite.SQLiteDatabase
+import android.Manifest
+import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -16,16 +22,17 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.androidflier.R
 import com.example.androidflier.adapter.ShopCardAdapter
-import com.example.androidflier.databinding.FragmentDashboardBinding
 import com.example.androidflier.databinding.FragmentNearestBinding
 import com.example.androidflier.model.Shop
-import com.example.androidflier.repo.localdb.DataBaseHelper
-import com.example.androidflier.repo.localdb.ManagerLocalStorage
 import com.example.androidflier.ui.viewmodels.ListModelFactory
 
 class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.OnRefreshListener {
 
     private var _binding: FragmentNearestBinding? = null
+    private val requestFeatureLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+        ::onGotPermissionsResultForFeature
+    )
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -55,10 +62,7 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
             "1",
             NearestListShopsViewModel::class.java
         )
-
-        setRecyclerView()
-        setRefreshLayout()
-        setObservers()
+        setSettings()
 
         refreshLayout.post {
             refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
@@ -66,6 +70,62 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
         }
 
         return binding.root
+    }
+
+    private fun setSettings() {
+        setRecyclerView()
+        setRefreshLayout()
+        setObservers()
+    }
+
+    private fun onGotPermissionsResultForFeature(grantedResult: Boolean) {
+        if (grantedResult) {
+            shopsViewModel.refreshData()
+          //  refreshLayout.isRefreshing = false
+
+        } else {
+            if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Log.d("perm", "not gra forever")
+                //если запретили навсегда
+                askUserForOpeningSettings()
+                refreshLayout.isRefreshing = false
+
+            } else {
+                Log.d("perm", "not gra NOT forever")
+                showDialogWithExplanationAndRequest()
+                refreshLayout.isRefreshing = false
+
+            }
+        }
+    }
+
+    private fun askUserForOpeningSettings() {
+        val appsettingIntent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", requireActivity().packageName, null)
+        )
+
+        if (requireActivity().packageManager.resolveActivity(
+                appsettingIntent,
+                PackageManager.MATCH_DEFAULT_ONLY
+            ) == null
+        ) {
+            Toast.makeText(requireContext(), "permissions are denied forever :(", Toast.LENGTH_LONG)
+                .show()
+        } else {
+            AlertDialog.Builder(requireContext()).setTitle("Permissions denied")
+                .setMessage("Would you like to open settings?")
+                .setPositiveButton("open") { _, _ ->
+                    startActivity(appsettingIntent)
+                }
+                .create()
+                .show()
+        }
+    }
+
+    private fun showDialogWithExplanationAndRequest() {
+        Toast.makeText(requireContext(), "permissions are need for works", Toast.LENGTH_LONG)
+            .show()
     }
 
     private fun setRecyclerView() {
@@ -108,13 +168,13 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
 
     override fun onDestroyView() {
         super.onDestroyView()
-        shopsViewModel.shops.removeObserver(shopObserver)
-        shopsViewModel.message.removeObserver(messageObserver)
+        shopObserver.let { shopsViewModel.shops.removeObserver(shopObserver) }
+         messageObserver.let { shopsViewModel.message.removeObserver(messageObserver)}
         _binding = null
     }
 
     override fun onRefresh() {
         Log.d("ref", "onRefresh")
-        shopsViewModel.refreshData()
+        requestFeatureLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
     }
 }
