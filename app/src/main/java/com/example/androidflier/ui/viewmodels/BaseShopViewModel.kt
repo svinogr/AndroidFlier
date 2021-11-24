@@ -23,5 +23,4 @@ abstract class BaseShopViewModel(val context: Application): ViewModel() {
         localDb = flierApp.localDb
     }
 
-    abstract fun refreshData()
 }

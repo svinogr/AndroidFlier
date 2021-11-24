@@ -61,7 +61,7 @@ class NearestListShopsViewModel(context: Application) : BaseShopViewModel(contex
         }
     }
 
-    override fun refreshData() {
+    fun refreshData() {
         allNearestShops()
         allTabs()
     }

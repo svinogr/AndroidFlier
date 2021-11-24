@@ -2,7 +2,9 @@ package com.example.androidflier.ui.allshops
 
 import android.os.Bundle
 import android.util.Log
-import android.view.*
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
@@ -39,6 +41,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     private lateinit var tabsObserver: Observer<List<Tab>>
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var searchView: SearchView
+    private var selectedTab: Tab? = null
+    private var searchText = ""
 
     companion object {
         const val TAG = "DashboardFragment"
@@ -66,17 +70,31 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
     private fun setSearchView() {
         searchView = binding.dashboardSeacrh
+        searchView.setOnCloseListener(object : SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                Log.d(TAG, "close searchbar ")
+                searchText = ""
+                searchView.onActionViewCollapsed()
+                // стоит ли ??
+                refreshLayout.isRefreshing = true
+                onRefresh()
+
+                return true
+            }
+        })
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?): Boolean {
-               shopsViewModel.search(query)
+                searchText = query ?: ""
+                refreshLayout.isRefreshing = true
+                onRefresh()
 
+                // shopsViewModel.search(query)
                 return true
             }
 
             override fun onQueryTextChange(newText: String?): Boolean {
-
                 Log.d("search", newText.let { newText.toString() })
-
                 return true
             }
         })
@@ -111,6 +129,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
             Log.d("DashboardViewModel state", viewLifecycleOwner.lifecycle.currentState.toString())
             if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 Log.d("TAg", it.toString())
+
                 adapterTab.listTab = it
                 adapterTab.notifyDataSetChanged()
                 recyclerViewTab.scheduleLayoutAnimation()
@@ -128,7 +147,6 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
             refreshLayout.isRefreshing = true // чтобы появился прогрес бар на начальном этапе
             onRefresh()
         }
-
     }
 
     private fun setRefreshLayout() {
@@ -145,9 +163,9 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
         recyclerView.adapter = adapter
 
         recyclerViewTab = binding.dashboardRecyclerTabView
-        val TLManager = LinearLayoutManager(view?.context)
-        TLManager.orientation = LinearLayoutManager.HORIZONTAL
-        recyclerViewTab.layoutManager = TLManager
+        val tLManager = LinearLayoutManager(view?.context)
+        tLManager.orientation = LinearLayoutManager.HORIZONTAL
+        recyclerViewTab.layoutManager = tLManager
 
         adapterTab = TabCardAdapter(tabSelectable = this)
         recyclerViewTab.adapter = adapterTab
@@ -155,8 +173,8 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
     override fun onRefresh() {
         Log.d("ref", "onRefresh")
-        shopsViewModel.refreshData()
-        shopsViewModel.getTab()
+        //  shopsViewModel.refreshData()
+        shopsViewModel.refreshDataSearch(selectedTab, searchText)
     }
 
     override fun onDestroyView() {
@@ -169,6 +187,10 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     }
 
     override fun withTab(tab: Tab) {
-        Log.d("CallbackTab", tab.title)
+        selectedTab = if (tab.selected) tab else null
+
+        refreshLayout.isRefreshing = true
+        onRefresh()
+        Log.d("CallbackTab", "$selectedTab.title $selectedTab.selected")
     }
 }

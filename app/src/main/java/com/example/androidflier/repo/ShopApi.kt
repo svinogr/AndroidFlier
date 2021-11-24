@@ -16,8 +16,10 @@ interface ShopApi {
         "Content-type:application/json"
     )
     @GET(value = "./api/shop/all")
-    fun getAllShop( @Query("from") from : String = "0",
-                    @Query("quantity") quantity : String = "10"): Call<List<Shop>>
+    fun getAllShop(
+        @Query("from") from: String = "0",
+        @Query("quantity") quantity: String = "10"
+    ): Call<List<Shop>>
 
     /**
      * returns all NEAREST shops with limit quantity and start from
@@ -28,10 +30,12 @@ interface ShopApi {
         "Content-type:application/json"
     )
     @GET(value = "./api/shop")
-    fun getAllNearestShop(@Query("lng") lng: Double,
-                          @Query("lat") lat: Double,
-                          @Query("from") from : String = "0",
-                          @Query("quantity") quantity : String = "10"): Call<List<Shop>>
+    fun getAllNearestShop(
+        @Query("lng") lng: Double,
+        @Query("lat") lat: Double,
+        @Query("from") from: String = "0",
+        @Query("quantity") quantity: String = "10"
+    ): Call<List<Shop>>
 
     /**
      * returns shop with his stocks
@@ -54,4 +58,12 @@ interface ShopApi {
     )
     @GET(value = "/api/shop/search")
     fun search(@Query("text") query: String): Call<List<Shop>>
+
+    @GET(value = "/api/shop/search")
+    fun getAllShopWithSearching(
+        @Query("tab") tab: String,
+        @Query("searchText") searchText: String,
+        @Query("from") from: String = "0",
+        @Query("quantity") quantity: String = "10"
+    ): Call<List<Shop>>
 }

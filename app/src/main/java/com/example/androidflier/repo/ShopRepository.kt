@@ -4,10 +4,11 @@ import android.location.Location
 import android.util.Log
 import com.example.androidflier.model.Coord
 import com.example.androidflier.model.Shop
+import com.example.androidflier.model.Tab
 import com.example.androidflier.repo.retrofit.RetrofitInst
 import retrofit2.Call
 
-class ShopRepository private constructor(): ShopRepositoryable {
+class ShopRepository private constructor() : ShopRepositoryable {
     private lateinit var shopApi: ShopApi
 
     companion object {
@@ -27,18 +28,28 @@ class ShopRepository private constructor(): ShopRepositoryable {
         return shopApi.getAllShop()
     }
 
+   override fun getAllShopsWithSearching(tab: Tab?, search: String): Call<List<Shop>> {
+        Log.d("getAllShopsWithSearching", "getAllShopsWithSearching")
+        var tabSearchText = ""
+        if (tab != null) tabSearchText = tab.title
+
+        val searchText = search.trim()
+
+       return shopApi.getAllShopWithSearching(tabSearchText, searchText)
+    }
+
     override fun getAllNearestShops(location: Location): Call<List<Shop>> {
         //TODO заменить на пполучение координат
         Log.d("getAllNearestShops", "${location.latitude} ${location.longitude}")
 
         //val coord = Coord(-57.5, -25.3)
         val coord = Coord(location.longitude, location.latitude)
-       //TODO
-       // return shopApi.getAllNearestShop(coord.lng, coord.lat)
+        //TODO
+        // return shopApi.getAllNearestShop(coord.lng, coord.lat)
         return shopApi.getAllNearestShop(coord.lng, coord.lat)
     }
 
-   override fun getShopWithStocks(shopId: Long): Call<Shop> {
+    override fun getShopWithStocks(shopId: Long): Call<Shop> {
         return shopApi.getShopWithStocks(shopId)
     }
 

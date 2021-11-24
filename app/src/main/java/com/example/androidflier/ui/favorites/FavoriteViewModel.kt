@@ -17,7 +17,7 @@ class FavoriteViewModel(context: Application): BaseShopViewModel(context) {
     private val _shops = MutableLiveData<List<Shop>>()
     val shops: LiveData<List<Shop>> = _shops
 
-    override fun refreshData() {
+     fun refreshData() {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 

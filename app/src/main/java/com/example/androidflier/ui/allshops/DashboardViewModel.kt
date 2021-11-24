@@ -28,35 +28,39 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
     private val _tabs = MutableLiveData<List<Tab>>()
     val tab: LiveData<List<Tab>> = _tabs
 
-    private fun allShops() {
+    private fun allShops(tab: Tab?, searchText: String) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
-            shopRepo.getAllShops().enqueue(object : Callback<List<Shop>> {
-                override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
-                    Log.d("DashboardViewModel", "fail: $t.toString()")
-                    _message.postValue(t.message)
-                    _shops.postValue(listOf())
-                }
-
-                override fun onResponse(call: Call<List<Shop>>, response: Response<List<Shop>>) {
-                    Log.d("DashboardViewModel", "resp: $response.toString()")
-                    if (response.code() != 200) {
-                        message.postValue(response.message())
+            shopRepo.getAllShopsWithSearching(tab, searchText)
+                .enqueue(object : Callback<List<Shop>> {
+                    override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
+                        Log.d("DashboardViewModel", "fail: $t.toString()")
+                        _message.postValue(t.message)
                         _shops.postValue(listOf())
-                    } else {
-                        _shops.postValue(response.body())
                     }
-                }
-            })
+
+                    override fun onResponse(
+                        call: Call<List<Shop>>,
+                        response: Response<List<Shop>>
+                    ) {
+                        Log.d("DashboardViewModel", "resp: $response.toString()")
+                        if (response.code() != 200) {
+                            message.postValue(response.message())
+                            _shops.postValue(listOf())
+                        } else {
+                            _shops.postValue(response.body())
+                        }
+                    }
+                })
         }
     }
 
-    private fun allTabs() {
+    private fun allTabs(tab: Tab?) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
-            Log.d("DashboardViewModel", " allTabs")
+            Log.d("allTabs", " allTabs start")
 
             val testString: List<Tab> = listOf(
                 Tab(1, "строка"),
@@ -68,48 +72,27 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
                 Tab(7, "строка 7"),
                 Tab(8, "строка 8")
             )
+// проверяем ессли выбрана таб то отоборазим как выбраную
+            if (tab != null) {
+                testString.forEach {
+                    if (it.title == tab.title)
+                        it.selected = true
+                    Log.d("forEach", " allTab $it")
+
+                }
+            }
+
             _tabs.postValue(testString)
-            Log.d("DashboardViewModel", " allTabs")
+
+            Log.d("DashboardViewModel", " allTabs end")
         }
     }
 
-    override fun refreshData() {
-        Log.d("DashboardViewModel", " refreshData")
-        allShops()
-        allTabs()
+    fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
+
+        allShops(selectedTab, searchText)
+        allTabs(selectedTab)
+        Log.d("DashboardViewModel", "$searchText  $selectedTab")
+
     }
-
-    fun getTab() {
-        allTabs()
-    }
-
-    fun search(query: String?) {
-        Log.d("DashboardViewModel", "$query")
-
-        GlobalScope.launch(Dispatchers.IO) {
-            delay(delayRefresh)
-
-            shopRepo.searchShops(query!!).enqueue(object : Callback<List<Shop>> {
-                override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
-                    Log.d("DashboardViewModel", "fail: $t.toString()")
-                    _message.postValue(t.message)
-                    _shops.postValue(listOf())
-                }
-
-                override fun onResponse(
-                    call: Call<List<Shop>>,
-                    response: Response<List<Shop>>
-                ) {
-                    Log.d("DashboardViewModel", "resp: $response.toString()")
-                    if (response.code() != 200) {
-                        message.postValue(response.message())
-                        _shops.postValue(listOf())
-                    } else {
-                        _shops.postValue(response.body())
-                    }
-                }
-            })
-        }
-    }
-
 }

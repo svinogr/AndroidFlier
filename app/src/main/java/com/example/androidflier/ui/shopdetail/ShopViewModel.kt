@@ -50,10 +50,7 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
                             }
 
                             _shop.postValue(shop!!)
-
                         }
-
-
                     }
                 }
 
@@ -77,7 +74,7 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
         }
     }
 
-    override fun refreshData() {
+     fun refreshData() {
         getShop()
     }
 
