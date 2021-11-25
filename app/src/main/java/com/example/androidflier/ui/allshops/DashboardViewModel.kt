@@ -89,10 +89,8 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
     }
 
     fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
-
         allShops(selectedTab, searchText)
         allTabs(selectedTab)
         Log.d("DashboardViewModel", "$searchText  $selectedTab")
-
     }
 }

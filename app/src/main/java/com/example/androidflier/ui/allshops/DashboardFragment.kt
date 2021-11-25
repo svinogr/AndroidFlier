@@ -26,10 +26,8 @@ import com.example.androidflier.ui.viewmodels.ListModelFactory
 
 class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     SwipeRefreshLayout.OnRefreshListener, TabViewHolder.TabSelectable {
-    private var _binding: FragmentDashboardBinding? = null
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
+    private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewTab: RecyclerView

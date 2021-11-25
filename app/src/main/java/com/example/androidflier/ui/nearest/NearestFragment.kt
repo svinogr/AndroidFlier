@@ -13,6 +13,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -27,18 +28,17 @@ import com.example.androidflier.adapter.holder.TabViewHolder
 import com.example.androidflier.databinding.FragmentNearestBinding
 import com.example.androidflier.model.Shop
 import com.example.androidflier.model.Tab
+import com.example.androidflier.ui.allshops.DashboardFragment
 import com.example.androidflier.ui.viewmodels.ListModelFactory
 
-class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.OnRefreshListener, TabViewHolder.TabSelectable {
+class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.OnRefreshListener,
+    TabViewHolder.TabSelectable {
 
     private var _binding: FragmentNearestBinding? = null
     private val requestFeatureLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
         ::onGotPermissionsResultForFeature
     )
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewTab: RecyclerView
@@ -49,6 +49,9 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
     private lateinit var messageObserver: Observer<String>
     private lateinit var tabsObserver: Observer<List<Tab>>
     private lateinit var refreshLayout: SwipeRefreshLayout
+    private lateinit var searchView: SearchView
+    private var selectedTab: Tab? = null
+    private var searchText = ""
 
     companion object {
         const val TAG = "NearestFragment"
@@ -82,12 +85,45 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
         setRecyclerView()
         setRefreshLayout()
         setObservers()
+        setSearchView()
+    }
+
+    private fun setSearchView() {
+        searchView = binding.nearestSeacrh
+        searchView.setOnCloseListener(object : SearchView.OnCloseListener {
+            override fun onClose(): Boolean {
+                Log.d(DashboardFragment.TAG, "close searchbar ")
+                searchText = ""
+                searchView.onActionViewCollapsed()
+                // стоит ли ??
+                refreshLayout.isRefreshing = true
+                onRefresh()
+
+                return true
+            }
+        })
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                searchText = query ?: ""
+                refreshLayout.isRefreshing = true
+                onRefresh()
+
+                // shopsViewModel.search(query)
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                Log.d("search", newText.let { newText.toString() })
+                return true
+            }
+        })
     }
 
     private fun onGotPermissionsResultForFeature(grantedResult: Boolean) {
         if (grantedResult) {
-            shopsViewModel.refreshData()
-          //  refreshLayout.isRefreshing = false
+            shopsViewModel.refreshDataSearch(selectedTab, searchText)
+            //  refreshLayout.isRefreshing = false
 
         } else {
             if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -195,8 +231,9 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
 
     override fun onDestroyView() {
         super.onDestroyView()
+
         shopObserver.let { shopsViewModel.shops.removeObserver(shopObserver) }
-         messageObserver.let { shopsViewModel.message.removeObserver(messageObserver)}
+        messageObserver.let { shopsViewModel.message.removeObserver(messageObserver) }
         _binding = null
     }
 
@@ -206,6 +243,10 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
     }
 
     override fun withTab(tab: Tab) {
-        Log.d("callbacktab", tab.title)
+        selectedTab = if (tab.selected) tab else null
+
+        refreshLayout.isRefreshing = true
+        onRefresh()
+        Log.d("CallbackTab", "$selectedTab.title $selectedTab.selected")
     }
 }

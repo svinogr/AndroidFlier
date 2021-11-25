@@ -28,25 +28,14 @@ class ShopRepository private constructor() : ShopRepositoryable {
         return shopApi.getAllShop()
     }
 
-   override fun getAllShopsWithSearching(tab: Tab?, search: String): Call<List<Shop>> {
+    override fun getAllShopsWithSearching(tab: Tab?, search: String): Call<List<Shop>> {
         Log.d("getAllShopsWithSearching", "getAllShopsWithSearching")
         var tabSearchText = ""
         if (tab != null) tabSearchText = tab.title
 
         val searchText = search.trim()
 
-       return shopApi.getAllShopWithSearching(tabSearchText, searchText)
-    }
-
-    override fun getAllNearestShops(location: Location): Call<List<Shop>> {
-        //TODO заменить на пполучение координат
-        Log.d("getAllNearestShops", "${location.latitude} ${location.longitude}")
-
-        //val coord = Coord(-57.5, -25.3)
-        val coord = Coord(location.longitude, location.latitude)
-        //TODO
-        // return shopApi.getAllNearestShop(coord.lng, coord.lat)
-        return shopApi.getAllNearestShop(coord.lng, coord.lat)
+        return shopApi.getAllShopWithSearching(tabSearchText, searchText)
     }
 
     override fun getShopWithStocks(shopId: Long): Call<Shop> {
@@ -55,5 +44,27 @@ class ShopRepository private constructor() : ShopRepositoryable {
 
     override fun searchShops(query: String): Call<List<Shop>> {
         return shopApi.search(query)
+    }
+
+    override fun getAllNearestShopsWithSearching(
+        location: Location,
+        tab: Tab?,
+        search: String
+    ): Call<List<Shop>> {
+        Log.d("getAllNearestShops", "${location.latitude} ${location.longitude}")
+        //val coord = Coord(-57.5, -25.3)
+        val coord = Coord(location.longitude, location.latitude)
+
+        var tabSearchText = ""
+        if (tab != null) tabSearchText = tab.title
+
+        val searchText = search.trim()
+
+        return shopApi.getAllNearestShopWithSearching(
+            coord.lng,
+            coord.lat,
+            tabSearchText,
+            searchText
+        )
     }
 }

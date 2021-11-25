@@ -9,11 +9,11 @@ interface ShopRepositoryable {
 
     fun getAllShops(): Call<List<Shop>>
 
-    fun getAllShopsWithSearching(tab: Tab?, searchText: String): Call<List<Shop>>
-
-    fun getAllNearestShops(location: Location): Call<List<Shop>>
+    fun getAllShopsWithSearching(tab: Tab?, search: String): Call<List<Shop>>
 
     fun getShopWithStocks(shopId: Long): Call<Shop>
 
     fun searchShops(query: String): Call<List<Shop>>
+
+    fun getAllNearestShopsWithSearching(location: Location, tab: Tab?, search: String): Call<List<Shop>>
 }

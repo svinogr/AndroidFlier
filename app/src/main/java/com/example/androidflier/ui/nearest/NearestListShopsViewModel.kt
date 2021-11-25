@@ -25,7 +25,7 @@ class NearestListShopsViewModel(context: Application) : BaseShopViewModel(contex
     private val locationReposable = LocationRepo.getInstance(context)
 
     @SuppressLint("MissingPermission")
-    fun allNearestShops() {
+    fun allNearestShops(tab: Tab?, searchText: String) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
@@ -36,54 +36,67 @@ class NearestListShopsViewModel(context: Application) : BaseShopViewModel(contex
                 if (loc != null) {
                     Log.d("loc", loc.latitude.toString())
 
-                    shopRepo.getAllNearestShops(loc).enqueue(object : Callback<List<Shop>> {
-                        override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
-                            Log.d("NearestListShopsViewModel", "fail: $t.toString()")
-                            _message.postValue(t.message)
-                            _shops.postValue(listOf())
-                        }
-
-                        override fun onResponse(
-                            call: Call<List<Shop>>,
-                            response: Response<List<Shop>>
-                        ) {
-                            Log.d("NearestListShopsViewModel", "resp: $response.toString()")
-                            if (response.code() != 200) {
-                                message.postValue(response.message())
+                    shopRepo.getAllNearestShopsWithSearching(loc, tab, searchText)
+                        .enqueue(object : Callback<List<Shop>> {
+                            override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
+                                Log.d("NearestListShopsViewModel", "fail: $t.toString()")
+                                _message.postValue(t.message)
                                 _shops.postValue(listOf())
-                            } else {
-                                _shops.postValue(response.body())
                             }
-                        }
-                    })
+
+                            override fun onResponse(
+                                call: Call<List<Shop>>,
+                                response: Response<List<Shop>>
+                            ) {
+                                Log.d("NearestListShopsViewModel", "resp: $response.toString()")
+                                if (response.code() != 200) {
+                                    message.postValue(response.message())
+                                    _shops.postValue(listOf())
+                                } else {
+                                    _shops.postValue(response.body())
+                                }
+                            }
+                        })
                 }
             }
         }
     }
 
-    fun refreshData() {
-        allNearestShops()
-        allTabs()
-    }
-
-    private fun allTabs() {
+    private fun allTabs(tab: Tab?) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
             Log.d("DashboardViewModel", " allTabs")
 
             val testString: List<Tab> = listOf(
-                Tab(1,"строка"),
-                Tab(2,"строка 2"),
-                Tab(3,"строка 3"),
-                Tab(4,"строка 4"),
-                Tab(5,"строка5"),
-                Tab(6,"строка 6"),
-                Tab(7,"строка 7"),
-                Tab(8,"строка 8")
+                Tab(1, "строка"),
+                Tab(2, "строка 2"),
+                Tab(3, "строка 3"),
+                Tab(4, "строка 4"),
+                Tab(5, "строка5"),
+                Tab(6, "строка 6"),
+                Tab(7, "строка 7"),
+                Tab(8, "строка 8")
             )
+
+            // проверяем ессли выбрана таб то отоборазим как выбраную
+            if (tab != null) {
+                testString.forEach {
+                    if (it.title == tab.title)
+                        it.selected = true
+                    Log.d("forEach", " allTab $it")
+
+                }
+            }
+
             _tabs.postValue(testString)
             Log.d("DashboardViewModel", " allTabs")
         }
+    }
+
+    fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
+        allNearestShops(selectedTab, searchText)
+        allTabs(selectedTab)
+        Log.d("DashboardViewModel", "$searchText  $selectedTab")
     }
 }
