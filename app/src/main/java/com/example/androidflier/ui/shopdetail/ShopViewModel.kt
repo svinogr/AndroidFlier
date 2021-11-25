@@ -34,7 +34,6 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
 
                 override fun onResponse(call: Call<Shop>, response: Response<Shop>) {
 
-
                     Log.d("DashboardViewModel", "resp: $response.toString()")
                     if (response.code() != 200) {
                         message.postValue(response.message())

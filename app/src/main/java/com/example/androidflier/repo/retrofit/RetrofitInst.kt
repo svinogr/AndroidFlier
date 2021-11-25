@@ -8,13 +8,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
+/*
 const val BASE_URL = "http://192.168.43.214:8081/"
+*/
 class RetrofitInst {
     lateinit var shopApi: ShopApi
     lateinit var stockApi: StockApi
 
     companion object {
         private lateinit var instance: RetrofitInst
+        const val BASE_URL = "http://192.168.43.214:8081/"
 
         init {
             val interceptor = HttpLoggingInterceptor()
