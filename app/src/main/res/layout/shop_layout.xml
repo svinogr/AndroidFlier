@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardCornerRadius="@dimen/cards_shop_corner_radius"
+    android:layout_marginTop="@dimen/cards_shop_margin_top"
     android:layout_marginBottom="@dimen/cards_shop_margin_bottom">
 
     <androidx.constraintlayout.widget.ConstraintLayout

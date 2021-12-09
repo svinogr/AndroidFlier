@@ -5,6 +5,7 @@
     android:id="@+id/stock_cardView"
     android:layout_width="match_parent"
     android:layout_height="@dimen/cards_stock_height"
+    android:layout_marginTop="@dimen/cards_stock_text_margin_top"
     android:layout_marginStart="@dimen/cards_stock_vertical_margin"
     android:layout_marginEnd="@dimen/cards_stock_vertical_margin"
     android:layout_marginBottom="@dimen/cards_stock_vertical_margin"

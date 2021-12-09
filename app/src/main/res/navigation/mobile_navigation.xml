@@ -37,6 +37,6 @@
     <fragment
         android:id="@+id/shopDetailFragment"
         android:name="com.example.androidflier.ui.shopdetail.ShopDetailFragment"
-        android:label="fragment_shop_detail"
+        android:label="@string/title_shop_detail"
         tools:layout="@layout/fragment_shop_detail" />
 </navigation>
