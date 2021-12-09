@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.androidflier.R
 import com.example.androidflier.adapter.TabCardAdapter
@@ -24,9 +25,9 @@ class TabViewHolder(itemView: View, val adapter: TabCardAdapter) : RecyclerView.
         val findViewById = itemView.findViewById<CardView>(R.id.tab_cardView)
 
         if (tab.selected) {
-            findViewById.setCardBackgroundColor(Color.BLUE)
+            findViewById.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tabSelectedColor))
         } else {
-            findViewById.setCardBackgroundColor(Color.GREEN)
+            findViewById.setCardBackgroundColor(ContextCompat.getColor(itemView.context, R.color.tabUnSelectedColor))
         }
     }
 

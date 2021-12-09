@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="btnFavoriteColorTrue">#E82626</color>
     <color name="btnFavoriteColorFalse">#FFFFFFFF</color>
- </resources>
+    <color name="tabSelectedColor">#B3AFAC</color>
+    <color name="tabUnSelectedColor">#726F6F</color>
+</resources>
