@@ -11,22 +11,15 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import okhttp3.Dispatcher
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import android.R
-
-import android.view.MenuItem
-
-import android.view.Menu
 
 
 class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
     private val _shops = MutableLiveData<List<Shop>>()
     val shops: LiveData<List<Shop>> = _shops
-    private val _tabs = MutableLiveData<List<Tab>>()
-    val tab: LiveData<List<Tab>> = _tabs
+
 
     private fun allShops(tab: Tab?, searchText: String) {
         GlobalScope.launch(Dispatchers.IO) {
@@ -56,37 +49,6 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
         }
     }
 
-    private fun allTabs(tab: Tab?) {
-        GlobalScope.launch(Dispatchers.IO) {
-            delay(delayRefresh)
-
-            Log.d("allTabs", " allTabs start")
-
-            val testString: List<Tab> = listOf(
-                Tab(1, "строка"),
-                Tab(2, "строка 2"),
-                Tab(3, "строка 3"),
-                Tab(4, "строка 4"),
-                Tab(5, "строка5"),
-                Tab(6, "строка 6"),
-                Tab(7, "строка 7"),
-                Tab(8, "строка 8")
-            )
-// проверяем ессли выбрана таб то отоборазим как выбраную
-            if (tab != null) {
-                testString.forEach {
-                    if (it.title == tab.title)
-                        it.selected = true
-                    Log.d("forEach", " allTab $it")
-
-                }
-            }
-
-            _tabs.postValue(testString)
-
-            Log.d("DashboardViewModel", " allTabs end")
-        }
-    }
 
     fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
         allShops(selectedTab, searchText)

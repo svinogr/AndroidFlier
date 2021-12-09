@@ -31,7 +31,7 @@ class ShopRepository private constructor() : ShopRepositoryable {
     override fun getAllShopsWithSearching(tab: Tab?, search: String): Call<List<Shop>> {
         Log.d("getAllShopsWithSearching", "getAllShopsWithSearching")
         var tabSearchText = ""
-        if (tab != null) tabSearchText = tab.title
+        if (tab != null) tabSearchText = tab.name
 
         val searchText = search.trim()
 
@@ -52,11 +52,14 @@ class ShopRepository private constructor() : ShopRepositoryable {
         search: String
     ): Call<List<Shop>> {
         Log.d("getAllNearestShops", "${location.latitude} ${location.longitude}")
-        //val coord = Coord(-57.5, -25.3)
-        val coord = Coord(location.longitude, location.latitude)
+        //TODO for testing GPS delete!!!
+
+        val coord = Coord(30.00, 20.00)
+
+        //val coord = Coord(location.longitude, location.latitude)
 
         var tabSearchText = ""
-        if (tab != null) tabSearchText = tab.title
+        if (tab != null) tabSearchText = tab.name
 
         val searchText = search.trim()
 

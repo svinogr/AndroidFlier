@@ -77,13 +77,13 @@ interface ShopApi {
 
     /**
      * returns all NEAREST shops with limit quantity and start from and search parameters
-     * api: "./api/shop?lng={lng}&lat={lat}&tab={tab}&searchText={searchText}&from={from}&quantity={quantity}"
+     * api: "./api/shop/nearest/search?lng={lng}&lat={lat}&tab={tab}&searchText={searchText}&from={from}&quantity={quantity}"
      */
     @Headers(
         "Accept: application/json",
         "Content-type:application/json"
     )
-    @GET(value = "./api/shop/search")
+    @GET(value = "./api/shop/nearest/search")
     fun getAllNearestShopWithSearching(
         @Query("lng") lng: Double,
         @Query("lat") lat: Double,
@@ -91,7 +91,5 @@ interface ShopApi {
         @Query("searchText") searchText: String,
         @Query("from") from: String = "0",
         @Query("quantity") quantity: String = "10"
-    ): Call<List<Shop>> {
-        TODO("Not yet implemented")
-    }
+    ): Call<List<Shop>>
 }

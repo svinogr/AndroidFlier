@@ -19,7 +19,7 @@ class TabViewHolder(itemView: View, val adapter: TabCardAdapter) : RecyclerView.
         this.tab = tab
         Log.d("TabViewHolder", "$tab")
         itemView.setOnClickListener(this)
-        textView.text = tab.title
+        textView.text = tab.name
 
         val findViewById = itemView.findViewById<CardView>(R.id.tab_cardView)
 

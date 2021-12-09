@@ -134,7 +134,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
             }
         }
 
-        shopsViewModel.tab.observe(viewLifecycleOwner, tabsObserver)
+        shopsViewModel.tabs.observe(viewLifecycleOwner, tabsObserver)
     }
 
     override fun onResume() {
@@ -180,7 +180,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
         shopsViewModel.shops.removeObserver(shopObserver)
         shopsViewModel.message.removeObserver(messageObserver)
-        shopsViewModel.tab.removeObserver(tabsObserver)
+        shopsViewModel.tabs.removeObserver(tabsObserver)
         _binding = null
     }
 

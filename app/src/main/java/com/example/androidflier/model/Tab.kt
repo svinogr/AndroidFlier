@@ -2,6 +2,6 @@ package com.example.androidflier.model
 
 data class Tab(
     val id: Int,
-    val title: String,
+    val name: String,
     var selected: Boolean = false
 )

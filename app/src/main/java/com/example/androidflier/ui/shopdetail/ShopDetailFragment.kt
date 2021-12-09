@@ -25,7 +25,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
     SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var recycler: RecyclerView
-    private  var _binding: FragmentShopDetailBinding? = null
+    private var _binding: FragmentShopDetailBinding? = null
     private val binding get() = _binding!!
     private lateinit var shop: ShopViewModel
     private lateinit var adapter: StockCardAdapter
@@ -114,7 +114,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
     private fun setRefreshLayout() {
         refreshLayout = binding.shopDetailRefreshLayout
         refreshLayout.setOnRefreshListener(this)
-          }
+    }
 
     private fun setRecyclerView() {
         val layout = GridLayoutManager(requireContext(), 2)
