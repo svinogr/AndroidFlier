@@ -90,10 +90,20 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
                     refreshLayout.isRefreshing = false
                 } else {
                     binding.shopDetailFragmentTitleShop.text = it.title
+
                     bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_title).text =
-                        it.title + it.favoriteStatus.toString()
-                    bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_body).text =
+                        it.title
+
+                    bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_description).text =
                         it.description
+
+                    bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_address).text =
+                        it.address
+
+                    bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_phone).text =
+                        it.phone
+
+                    //TODO для плавности возможно стоит сделать появление сердечка из режима невидимости
 
                     if (it.favoriteStatus) btnFavorite.setImageResource(R.drawable.ic_heart_red) else btnFavorite.setImageResource(
                         R.drawable.ic_heart_white
@@ -125,7 +135,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
     }
 
     private fun setFavoriteBtn() {
-        btnFavorite = binding.bottomSheet.saveToFavorite
+        btnFavorite = binding.saveToFavorite
 
         btnFavorite.setOnClickListener(object : View.OnClickListener {
             override fun onClick(v: View?) {

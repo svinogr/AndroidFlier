@@ -14,5 +14,6 @@ data class Shop(
     var url: String,
     var img: String,
     var favoriteStatus: Boolean = false,
+    var phone: String,
     var stocks: MutableList<Stock>
 )

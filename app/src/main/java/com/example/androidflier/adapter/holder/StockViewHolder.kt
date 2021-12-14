@@ -1,10 +1,12 @@
 package com.example.androidflier.adapter.holder
 
+import android.view.RoundedCorner
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.example.androidflier.R
 import com.example.androidflier.model.Stock
 import com.example.androidflier.repo.retrofit.RetrofitInst
@@ -20,6 +22,9 @@ class StockViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         curPrice.text = stock.curPrice.toString()
         oldPrice.text = stock.oldPrice.toString()
 
-        Glide.with(itemView).load(RetrofitInst.BASE_URL).centerCrop().placeholder(R.drawable.ic_spiner).into(img)
+        Glide.with(itemView)
+            .load(RetrofitInst.IMG_STOCK_URL + stock.img)
+            .centerCrop()
+            .placeholder(R.drawable.ic_spiner).into(img)
     }
 }

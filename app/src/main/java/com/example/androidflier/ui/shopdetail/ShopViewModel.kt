@@ -92,7 +92,8 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
             url = "",
             img = "",
             favoriteStatus = false,
-            stocks = mutableListOf()
+            stocks = mutableListOf(),
+            phone = ""
         )
     }
 }

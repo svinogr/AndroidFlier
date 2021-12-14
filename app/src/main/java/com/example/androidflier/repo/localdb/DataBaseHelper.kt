@@ -23,6 +23,7 @@ const val SHOP_COL_DESCRIPTION = "description"
 const val SHOP_COL_URL = "url"
 const val SHOP_COL_IMG = "img"
 const val SHOP_COL_FAVORITE = "favorite"
+const val SHOP_COLL_PHONE = "phone"
 
 const val CREATE_TABLE_SHOP =
     "CREATE TABLE " + TABLENAME + " (id INTEGER, " +
@@ -33,7 +34,8 @@ const val CREATE_TABLE_SHOP =
             SHOP_COL_COORDLAT + " NUMERIC, " +
             SHOP_COL_COORDLNT + " NUMERIC, " +
             SHOP_COL_IMG + " CHARACTER VARYING(200), " +
-            SHOP_COL_URL + " CHARACTER VARYING(200))"
+            SHOP_COL_URL + " CHARACTER VARYING(200), " +
+            SHOP_COLL_PHONE + " CHARACTER VARYING(200))"
 
 private const val SQL_DELETE_TABLE_SHOP = "DROP TABLE IF EXISTS $TABLENAME"
 
@@ -73,6 +75,7 @@ class DataBaseHelper(var context: Context) :
             put(SHOP_COL_DESCRIPTION, shop.description)
             put(SHOP_COL_URL, shop.url)
             put(SHOP_COL_IMG, shop.img)
+            put(SHOP_COLL_PHONE, shop.phone)
         }
 
         writableDatabase.insert(TABLENAME, null, contValue)
@@ -98,7 +101,6 @@ class DataBaseHelper(var context: Context) :
     }
 
     private fun shopFromCursor(cursor: Cursor?): Shop {
-
         return Shop(
             id = cursor!!.getLong(cursor.getColumnIndexOrThrow(SHOP_COL_ID)),
             created = "",
@@ -112,6 +114,7 @@ class DataBaseHelper(var context: Context) :
             description = cursor.getString(cursor.getColumnIndexOrThrow(SHOP_COL_DESCRIPTION)),
             url = cursor.getString(cursor.getColumnIndexOrThrow(SHOP_COL_URL)),
             img = cursor.getString(cursor.getColumnIndexOrThrow(SHOP_COL_IMG)),
+            phone = cursor.getString(cursor.getColumnIndexOrThrow(SHOP_COLL_PHONE)),
             stocks = mutableListOf<Stock>(),
             favoriteStatus = true
         )
