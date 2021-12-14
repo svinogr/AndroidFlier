@@ -23,7 +23,6 @@ class ShopViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var address: TextView = itemView.findViewById(R.id.shop_cardView_address)
     private var img: ImageView = itemView.findViewById(R.id.shop_cardView_imageView)
 
-
     fun bind(shop: Shop) {
         title.text = shop.title
         address.text = shop.address
