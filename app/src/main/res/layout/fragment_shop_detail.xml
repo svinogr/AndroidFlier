@@ -80,6 +80,9 @@
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
     <include
-        android:id="@+id/bottom_sheet"
+        android:id="@+id/bottom_sheet_shop"
         layout="@layout/bottom_sheet_shop" />
+    <include
+        android:id="@+id/bottom_sheet_stock"
+        layout="@layout/bottom_sheet_stock" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

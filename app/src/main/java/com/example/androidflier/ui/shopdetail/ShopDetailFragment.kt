@@ -1,7 +1,6 @@
 package com.example.androidflier.ui.shopdetail
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,25 +14,30 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.androidflier.R
 import com.example.androidflier.adapter.StockCardAdapter
-import com.example.androidflier.databinding.FragmentDashboardBinding
+import com.example.androidflier.adapter.holder.StockViewHolder
 import com.example.androidflier.databinding.FragmentShopDetailBinding
 import com.example.androidflier.model.Shop
+import com.example.androidflier.model.Stock
 import com.example.androidflier.ui.viewmodels.SingleEntityModelFactory
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
-    SwipeRefreshLayout.OnRefreshListener {
+    SwipeRefreshLayout.OnRefreshListener, StockViewHolder.SheetBottomClickListener {
 
+    private lateinit var bottomSheetBehaviorShop: BottomSheetBehavior<LinearLayout>
+    private lateinit var bottomSheetBehaviorStock: BottomSheetBehavior<LinearLayout>
     private lateinit var recycler: RecyclerView
     private var _binding: FragmentShopDetailBinding? = null
     private val binding get() = _binding!!
     private lateinit var shop: ShopViewModel
     private lateinit var adapter: StockCardAdapter
-    private lateinit var bottomSheetLayout: LinearLayout
+    private lateinit var bottomSheetLayoutShop: LinearLayout
+    private lateinit var bottomSheetLayoutStock: LinearLayout
     private lateinit var btnFavorite: ImageButton
     private lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var messageObserver: Observer<String>
     private lateinit var shopObserver: Observer<Shop>
+    private var selectStock: Stock? = null
 
     companion object {
         const val ARG_ID_LONG = "id"
@@ -55,7 +59,8 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
             SingleEntityModelFactory(id, requireActivity().application)
         ).get(TAG, ShopViewModel::class.java)
 
-        bottomSheetLayout = binding.bottomSheet.bottomSheet
+        bottomSheetLayoutShop = binding.bottomSheetShop.bottomSheet
+        bottomSheetLayoutStock = binding.bottomSheetStock.bottomSheetStock
 
         setBottomSheetBehavior()
         setFavoriteBtn()
@@ -91,16 +96,16 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
                 } else {
                     binding.shopDetailFragmentTitleShop.text = it.title
 
-                    bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_title).text =
+                    bottomSheetLayoutShop.findViewById<TextView>(R.id.bottom_sheet_title).text =
                         it.title
 
-                    bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_description).text =
+                    bottomSheetLayoutShop.findViewById<TextView>(R.id.bottom_sheet_description).text =
                         it.description
 
-                    bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_address).text =
+                    bottomSheetLayoutShop.findViewById<TextView>(R.id.bottom_sheet_address).text =
                         it.address
 
-                    bottomSheetLayout.findViewById<TextView>(R.id.bottom_sheet_phone).text =
+                    bottomSheetLayoutShop.findViewById<TextView>(R.id.bottom_sheet_phone).text =
                         it.phone
 
                     //TODO для плавности возможно стоит сделать появление сердечка из режима невидимости
@@ -131,6 +136,7 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
         recycler = binding.shopDetailFragmentRecyclerStocks
         recycler.layoutManager = layout
         adapter = StockCardAdapter()
+        adapter.stockListener = this
         recycler.adapter = adapter
     }
 
@@ -145,22 +151,37 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
     }
 
     private fun setBottomSheetBehavior() {
-        val bottomSheetBehavior = BottomSheetBehavior.from(binding.bottomSheet.bottomSheet)
+        bottomSheetBehaviorShop = BottomSheetBehavior.from(binding.bottomSheetShop.bottomSheet)
 
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+        bottomSheetBehaviorShop.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehaviorShop.state = BottomSheetBehavior.STATE_EXPANDED
 
-        bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
-        bottomSheetBehavior.peekHeight = 340
-        bottomSheetBehavior.isHideable = true
+        bottomSheetBehaviorShop.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehaviorShop.peekHeight = 340
+        bottomSheetBehaviorShop.isHideable = true
 
         binding.shopDetailFragmentBtnInfo.setOnClickListener() {
-            if (bottomSheetBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_HIDDEN
+            if(bottomSheetBehaviorStock.state == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehaviorStock.state = BottomSheetBehavior.STATE_HIDDEN
+            }
+
+            if (bottomSheetBehaviorShop.state == BottomSheetBehavior.STATE_EXPANDED) {
+                bottomSheetBehaviorShop.state = BottomSheetBehavior.STATE_HIDDEN
             } else {
-                bottomSheetBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+                bottomSheetBehaviorShop.state = BottomSheetBehavior.STATE_EXPANDED
             }
         }
+
+        bottomSheetBehaviorStock = BottomSheetBehavior.from(binding.bottomSheetStock.bottomSheetStock)
+
+        bottomSheetBehaviorStock.state = BottomSheetBehavior.STATE_COLLAPSED
+        bottomSheetBehaviorStock.state = BottomSheetBehavior.STATE_EXPANDED
+
+        bottomSheetBehaviorStock.state = BottomSheetBehavior.STATE_HIDDEN
+        bottomSheetBehaviorStock.peekHeight = 340
+        bottomSheetBehaviorStock.isHideable = true
+
+
     }
 
     override fun onRefresh() {
@@ -173,5 +194,28 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
         shop.shop.removeObserver(shopObserver)
         shop.message.removeObserver(messageObserver)
         _binding = null
+    }
+
+    override fun stockSelectable(stock: Stock) {
+        if(selectStock == null) selectStock = stock
+
+        bottomSheetLayoutStock.findViewById<TextView>(R.id.bottom_sheet_title_stock).text =
+            stock.id.toString()
+
+        bottomSheetLayoutStock.findViewById<TextView>(R.id.bottom_sheet_description_stock).text =
+            stock.description
+
+
+        if(bottomSheetBehaviorShop.state == BottomSheetBehavior.STATE_EXPANDED) {
+            bottomSheetBehaviorShop.state = BottomSheetBehavior.STATE_HIDDEN
+        }
+
+        if (bottomSheetBehaviorStock.state == BottomSheetBehavior.STATE_EXPANDED && selectStock!!.id == stock.id) {
+            bottomSheetBehaviorStock.state = BottomSheetBehavior.STATE_HIDDEN
+        } else {
+            bottomSheetBehaviorStock.state = BottomSheetBehavior.STATE_EXPANDED
+        }
+
+        selectStock = stock
     }
 }
