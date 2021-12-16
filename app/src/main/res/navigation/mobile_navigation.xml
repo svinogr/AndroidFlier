@@ -34,9 +34,18 @@
             android:id="@+id/action_navigation_favorite_to_shopDetailFragment"
             app:destination="@id/shopDetailFragment" />
     </fragment>
+
     <fragment
         android:id="@+id/shopDetailFragment"
         android:name="com.example.androidflier.ui.shopdetail.ShopDetailFragment"
         android:label="@string/title_shop_detail"
         tools:layout="@layout/fragment_shop_detail" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.androidflier.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile"
+        />
+
 </navigation>
