@@ -30,7 +30,7 @@ class NearestListShopsViewModel(context: Application) : BaseShopViewModel(contex
             locationReposable.getLocateClient().lastLocation.addOnCompleteListener { location ->
 
                 val loc = location.result
-              //TODO for testing GPS
+                //TODO for testing GPS
 
                 if (loc != null) {
                     Log.d("loc", loc.latitude.toString())
@@ -60,38 +60,6 @@ class NearestListShopsViewModel(context: Application) : BaseShopViewModel(contex
             }
         }
     }
-
-    /*  open fun allTabs(tab: Tab?) {
-          GlobalScope.launch(Dispatchers.IO) {
-              delay(delayRefresh)
-
-              Log.d("DashboardViewModel", " allTabs")
-
-              val testString: List<Tab> = listOf(
-                  Tab(1, "строка"),
-                  Tab(2, "строка 2"),
-                  Tab(3, "строка 3"),
-                  Tab(4, "строка 4"),
-                  Tab(5, "строка5"),
-                  Tab(6, "строка 6"),
-                  Tab(7, "строка 7"),
-                  Tab(8, "строка 8")
-              )
-
-              // проверяем ессли выбрана таб то отоборазим как выбраную
-              if (tab != null) {
-                  testString.forEach {
-                      if (it.name == tab.name)
-                          it.selected = true
-                      Log.d("forEach", " allTab $it")
-
-                  }
-              }
-
-              _tabs.postValue(testString)
-              Log.d("DashboardViewModel", " allTabs")
-          }
-      }*/
 
     fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
         allNearestShops(selectedTab, searchText)

@@ -68,9 +68,10 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
             requireActivity(),
             ListModelFactory(requireActivity().application)
         ).get(
-            "1",
+            TAG,
             NearestListShopsViewModel::class.java
         )
+
         setSettings()
 
         refreshLayout.post {
