@@ -3,14 +3,17 @@ package com.example.androidflier.ui.profile
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.example.androidflier.FlierApp
 import com.example.androidflier.model.SettingsSearch
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.example.androidflier.util.ShopWorker
 
 
 class SettingsViewModel(val context: Context) : ViewModel() {
@@ -20,7 +23,7 @@ class SettingsViewModel(val context: Context) : ViewModel() {
     private lateinit var settingsSearch: SettingsSearch
 
     companion object {
-        private const val ON = "on"
+        const val WORKER_WORK = "on"
         private const val RADIUS = "radius"
         private const val TIME = "time"
         private const val TAGS_EDIT = "tags"
@@ -37,7 +40,7 @@ class SettingsViewModel(val context: Context) : ViewModel() {
         val flierApp = context as FlierApp
         sharedPreferences = flierApp.sharedPreferences
 
-        val on = sharedPreferences.getBoolean(ON, false)
+        val on = sharedPreferences.getBoolean(WORKER_WORK, false)
         val radius = sharedPreferences.getInt(RADIUS, 1)
         val time = sharedPreferences.getInt(TIME, 4)
         val listTag = getListTagFromSharedPref(sharedPreferences)
@@ -51,7 +54,7 @@ class SettingsViewModel(val context: Context) : ViewModel() {
       //  GlobalScope.launch(Dispatchers.IO) {
         Log.d(TAG, settings.toString())
             val edit = sharedPreferences.edit()
-            edit.putBoolean(ON, settings.on)
+            edit.putBoolean(WORKER_WORK, settings.on)
             edit.putInt(RADIUS, settings.radius)
             edit.putInt(TIME, settings.timePeriod)
             edit.putString(TAGS_EDIT, getStringFromList(settings.listTag))
@@ -67,5 +70,34 @@ class SettingsViewModel(val context: Context) : ViewModel() {
         }
 
         return str.trim()
+    }
+
+    fun stopOrStartShopWorker() {
+        val isWorkerWork = sharedPreferences.getBoolean(WORKER_WORK, true)
+        Log.d("stat worker", isWorkerWork.toString())
+        if(isWorkerWork) {
+            WorkManager.getInstance(context).cancelUniqueWork(ShopWorker.SHOP_WORKER)
+        }else{
+            val constraints = Constraints
+                .Builder()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
+
+            val workRequest = OneTimeWorkRequest
+                .Builder(ShopWorker::class.java)
+                .setConstraints(constraints)
+                .build()
+
+            WorkManager.getInstance(context).enqueue(workRequest)
+        }
+
+        saveStateWorker(!isWorkerWork)
+    }
+
+    fun saveStateWorker(isWork: Boolean) {
+        Log.d("save state work", isWork.toString())
+        val edit = sharedPreferences.edit()
+        edit.putBoolean(ShopWorker.SHOP_WORKER, isWork)
+        edit.apply()
     }
 }

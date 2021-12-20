@@ -11,6 +11,8 @@
     <string name="title_radiusCheck">Радиус проверки</string>
     <string name="title_tagCheck">Тэги поиска</string>
     <string name="title_timeCheck">Период проверки</string>
+    <string name="notification_channel_name">Новые скидки</string>
+    <string name="new_stock_title_test">test name</string>
 
     <string-array name="radiusSpinner">
         <item>100 метров</item>
