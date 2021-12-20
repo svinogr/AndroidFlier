@@ -50,35 +50,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         setObservers()
 
+        settingsModel.getSettings()
         return binding.root
     }
 
     private fun setEditTags() {
         tagEdit = binding.tagEditText
-
-   /*     tagEdit.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(
-                s: CharSequence?,
-                start: Int,
-                count: Int,
-                after: Int
-            ) {
-
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                if (s!!.trim().isNotEmpty()) {
-                    settings.listTag.clear()
-                    settings.listTag = s.split(" ") as MutableList<String>
-                } else {
-                    settings.listTag.clear()
-                }
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-        })*/
     }
 
 
@@ -87,7 +64,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
         switchOnOf.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                settings.on = isChecked
+                //    settings.on = isChecked
             }
         })
     }
@@ -105,13 +82,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             settings.timePeriod = it.timePeriod
 
             tagEdit.text.clear()
-          //  settings.listTag.clear()
-            Log.d(TAG, tagEdit.text.toString())
-            Log.d(TAG, settings.listTag.toString())
 
             for (tag in it.listTag) {
                 tagEdit.text.append(tag + " ")
-             //   settings.listTag.add(tag)
             }
 
         }
@@ -145,50 +118,50 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 radiusSpinner.adapter = arrayAdapter
             }
 
-        timeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                Log.d("TIME", parent?.getItemAtPosition(position).toString())
-                settings.timePeriod = position
-            }
+        /* timeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+             override fun onItemSelected(
+                 parent: AdapterView<*>?,
+                 view: View?,
+                 position: Int,
+                 id: Long
+             ) {
+                 Log.d("TIME", parent?.getItemAtPosition(position).toString())
+                 settings.timePeriod = position
+             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-        }
+             override fun onNothingSelected(parent: AdapterView<*>?) {
+                 TODO("Not yet implemented")
+             }
+         }*/
 
-        radiusSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                parent: AdapterView<*>?,
-                view: View?,
-                position: Int,
-                id: Long
-            ) {
-                Log.d("TIME", parent?.getItemAtPosition(position).toString())
-                settings.radius = position
-            }
+        /* radiusSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+             override fun onItemSelected(
+                 parent: AdapterView<*>?,
+                 view: View?,
+                 position: Int,
+                 id: Long
+             ) {
+                 Log.d("TIME", parent?.getItemAtPosition(position).toString())
+                 settings.radius = position
+             }
 
-            override fun onNothingSelected(parent: AdapterView<*>?) {
-                TODO("Not yet implemented")
-            }
-        }
+             override fun onNothingSelected(parent: AdapterView<*>?) {
+                 TODO("Not yet implemented")
+             }
+         }*/
 
     }
 
     override fun onPause() {
         super.onPause()
-       // settings.listTag.clear()
-        val text = tagEdit.text.trim()
-        if (text.isNotEmpty()) {
-            settings.listTag.clear()
-            settings.listTag = text.split(" ") as MutableList<String>
-        } else {
-            settings.listTag.clear()
-        }
+        Log.d("onPause", switchOnOf.isChecked.toString())
+
+        settings.radius = radiusSpinner.selectedItemPosition
+        settings.timePeriod = timeSpinner.selectedItemPosition
+        settings.on = switchOnOf.isChecked
+
+        val text = tagEdit.text.trim().split(" ")
+        settings.listTag = text
 
         settingsModel.saveSettings(settings)
     }

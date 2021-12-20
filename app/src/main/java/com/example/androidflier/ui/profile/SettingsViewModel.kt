@@ -13,8 +13,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 
 
-class SettingsViewModel(context: Context) : ViewModel() {
-    private var sharedPreferences: SharedPreferences
+class SettingsViewModel(val context: Context) : ViewModel() {
+    private lateinit var sharedPreferences: SharedPreferences
     private var _settings = MutableLiveData<SettingsSearch>()
     val settings: LiveData<SettingsSearch> = _settings
     private lateinit var settingsSearch: SettingsSearch
@@ -27,7 +27,13 @@ class SettingsViewModel(context: Context) : ViewModel() {
         private const val TAG = "SettingsViewModel"
     }
 
-    init {
+    private fun getListTagFromSharedPref(sharedPreferences: SharedPreferences): MutableList<String> {
+        val strJson = sharedPreferences.getString(TAGS_EDIT, "")
+
+        return strJson!!.split(" ") as MutableList<String>
+    }
+
+    fun getSettings() {
         val flierApp = context as FlierApp
         sharedPreferences = flierApp.sharedPreferences
 
@@ -41,34 +47,25 @@ class SettingsViewModel(context: Context) : ViewModel() {
         _settings.value = settingsSearch
     }
 
-    private fun getListTagFromSharedPref(sharedPreferences: SharedPreferences): MutableList<String> {
-        val strJson = sharedPreferences.getString(TAGS_EDIT, "")
-
-        return strJson!!.split(" ") as MutableList<String>
-    }
-
-    fun getSettings() {
-
-    }
-
     fun saveSettings(settings: SettingsSearch) {
-        GlobalScope.launch(Dispatchers.IO) {
+      //  GlobalScope.launch(Dispatchers.IO) {
+        Log.d(TAG, settings.toString())
             val edit = sharedPreferences.edit()
             edit.putBoolean(ON, settings.on)
             edit.putInt(RADIUS, settings.radius)
             edit.putInt(TIME, settings.timePeriod)
             edit.putString(TAGS_EDIT, getStringFromList(settings.listTag))
             edit.apply()
-Log.d(TAG, settings.listTag.toString())
-            _settings.postValue(settings)
-        }
+        //}
     }
 
     private fun getStringFromList(list: List<String>): String {
-        Log.d(TAG, list.toString())
-        val str = ""
-        list.forEach { s: String -> str.plus(s + " ") }
-        Log.d(TAG, str)
+        var str = ""
+
+        for (s in list) {
+            str = str.plus(s + " ")
+        }
+
         return str.trim()
     }
 }
