@@ -30,7 +30,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         const val TAG = "profile fragment"
     }
 
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -39,18 +38,20 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         settings = SettingsSearch()
 
-        setSpinners()
-        setSwitch()
-        setEditTags()
-
         settingsModel = ViewModelProvider(
             requireActivity(),
             SingleEntityModelFactory(0, requireActivity().application) // 0 или любой int
         ).get(TAG, SettingsViewModel::class.java)
 
+        settingsModel.getSettings()
+
+        setSpinners()
+        setSwitch()
+        setEditTags()
         setObservers()
 
-        settingsModel.getSettings()
+        hideOrShowSettings()
+
         return binding.root
     }
 
@@ -58,20 +59,24 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         tagEdit = binding.tagEditText
     }
 
-
     private fun setSwitch() {
         switchOnOf = binding.switchOnOff
 
         switchOnOf.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
-                //    settings.on = isChecked
+                Log.d(TAG, "${switchOnOf.isChecked} switch")
+               hideOrShowSettings()
             }
         })
     }
 
+    private fun hideOrShowSettings() {
+      timeSpinner.isEnabled = switchOnOf.isChecked
+      radiusSpinner.isEnabled = switchOnOf.isChecked
+      tagEdit.isEnabled = switchOnOf.isChecked
+    }
 
     private fun setObservers() {
-
         settingsObserver = Observer {
             switchOnOf.isChecked = it.on
             radiusSpinner.setSelection(it.radius)
@@ -86,7 +91,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             for (tag in it.listTag) {
                 tagEdit.text.append(tag + " ")
             }
-
         }
 
         settingsModel.settings.observe(viewLifecycleOwner, settingsObserver)
