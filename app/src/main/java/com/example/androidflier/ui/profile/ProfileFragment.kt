@@ -43,14 +43,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             SingleEntityModelFactory(0, requireActivity().application) // 0 или любой int
         ).get(TAG, SettingsViewModel::class.java)
 
-        settingsModel.getSettings()
 
 
         setSpinners()
-        setSwitch()
         setEditTags()
         setObservers()
+        setSwitch()
 
+        settingsModel.getSettings()
         hideOrShowSettings()
 
         return binding.root

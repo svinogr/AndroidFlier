@@ -18,6 +18,7 @@ import com.example.androidflier.util.ShopWorker
 
 private const val SHARED_PREF = "shared pref"
 const val NOTIFICATION_CHANNEL_ID = "channel id"
+private const val FIRST_START_WORKER = "start worker"
 
 class FlierApp() : Application() {
     lateinit var sharedPreferences: SharedPreferences
@@ -33,14 +34,17 @@ class FlierApp() : Application() {
         locationRepo = LocationRepo.getInstance(this)
         tabRepo = TabRepo.getInstance()
         sharedPreferences = getSharedPreferences(SHARED_PREF, Context.MODE_PRIVATE)
-        val isWorkerWork = sharedPreferences.getBoolean(SettingsViewModel.WORKER_WORK, true)
+        val isFirst = sharedPreferences.getBoolean(FIRST_START_WORKER, true)
 
-        /*if(!isWorkerWork) {
+        if(isFirst) {
             createShopWorker()
+            val edit = sharedPreferences.edit()
+            edit.putBoolean(FIRST_START_WORKER, false) // помечаем что что воркер запущен уже был
+            edit.putBoolean(ShopWorker.SHOP_WORKER, true) // помечаем что воркер запущен
+            edit.apply()
         }
-*/
-        createChannel()
 
+        createChannel() // возможно стоит перенести в блок if выше
     }
 
     private fun createChannel() {
