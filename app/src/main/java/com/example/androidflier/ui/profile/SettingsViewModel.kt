@@ -13,7 +13,12 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.example.androidflier.FlierApp
 import com.example.androidflier.model.SettingsSearch
+import com.example.androidflier.model.SettingsSearch.Companion.RADIUS
+import com.example.androidflier.model.SettingsSearch.Companion.TAGS_EDIT
+import com.example.androidflier.model.SettingsSearch.Companion.TIME
+import com.example.androidflier.model.SettingsSearch.Companion.WORKER_WORK
 import com.example.androidflier.util.ShopWorker
+import com.example.androidflier.util.ShopWorker.Companion.SHOP_WORKER
 import java.lang.StringBuilder
 
 
@@ -22,20 +27,9 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
     private var _settings = MutableLiveData<SettingsSearch>()
     val settings: LiveData<SettingsSearch> = _settings
     private lateinit var settingsSearch: SettingsSearch
+    private val TAG = "SettingsViewModel"
 
-    companion object {
-        const val WORKER_WORK = "on"
-        private const val RADIUS = "radius"
-        private const val TIME = "time"
-        private const val TAGS_EDIT = "tags"
-        private const val TAG = "SettingsViewModel"
-    }
 
-    private fun getListTagFromSharedPref(sharedPreferences: SharedPreferences): MutableList<String> {
-        val strJson = sharedPreferences.getString(TAGS_EDIT, "")
-
-        return strJson!!.split(" ") as MutableList<String>
-    }
 
     fun getSettings() {
         val flierApp = context as FlierApp
@@ -44,7 +38,7 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
         val on = sharedPreferences.getBoolean(WORKER_WORK, false)
         val radius = sharedPreferences.getInt(RADIUS, 1)
         val time = sharedPreferences.getInt(TIME, 4)
-        val listTag = getListTagFromSharedPref(sharedPreferences)
+        val listTag = SettingsSearch.getListTagFromSharedPref(sharedPreferences)
         Log.d(TAG, listTag.toString() + "load" + on + radius + time)
         settingsSearch = SettingsSearch(on, time, radius, listTag)
 
@@ -52,36 +46,29 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
     }
 
     fun saveSettings(settings: SettingsSearch) {
-      //  GlobalScope.launch(Dispatchers.IO) {
+        //  GlobalScope.launch(Dispatchers.IO) {
         Log.d(TAG, settings.toString())
-            val edit = sharedPreferences.edit()
-            edit.putBoolean(WORKER_WORK, settings.on)
-            edit.putInt(RADIUS, settings.radius)
-            edit.putInt(TIME, settings.timePeriod)
-            edit.putString(TAGS_EDIT, getStringFromList(settings.listTag))
-            edit.apply()
+        val edit = sharedPreferences.edit()
+        edit.putBoolean(WORKER_WORK, settings.on)
+        edit.putInt(RADIUS, settings.radius)
+        edit.putInt(TIME, settings.timePeriod)
+        edit.putString(TAGS_EDIT, SettingsSearch.getStringFromList(settings.listTag))
+        edit.apply()
         //}
     }
 
-    private fun getStringFromList(list: List<String>): String {
-        var str = StringBuilder()
 
-        for (s in list) {
-            str = str.append(s + " ")
-        }
-
-        return str.toString().trim()
-    }
 
     fun stopOrStartShopWorker(toOn: Boolean) {
-        val isWorkerWork = sharedPreferences.getBoolean(WORKER_WORK, true)
+        val isWorkerWork = sharedPreferences.getBoolean(SHOP_WORKER, true)
         Log.d("stat worker", isWorkerWork.toString())
+        Log.d("stat worker", toOn.toString())
 
         if (isWorkerWork && toOn) return
 
-        if(!toOn) {
+        if (!toOn) {
             WorkManager.getInstance(context).cancelUniqueWork(ShopWorker.SHOP_WORKER)
-        }else{
+        } else {
             val constraints = Constraints
                 .Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
