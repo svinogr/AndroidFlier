@@ -14,9 +14,10 @@ import androidx.work.WorkManager
 import com.example.androidflier.FlierApp
 import com.example.androidflier.model.SettingsSearch
 import com.example.androidflier.util.ShopWorker
+import java.lang.StringBuilder
 
 
-class SettingsViewModel(val context: Context) : ViewModel() {
+class SettingsViewModel(private val context: Context) : ViewModel() {
     private lateinit var sharedPreferences: SharedPreferences
     private var _settings = MutableLiveData<SettingsSearch>()
     val settings: LiveData<SettingsSearch> = _settings
@@ -63,19 +64,22 @@ class SettingsViewModel(val context: Context) : ViewModel() {
     }
 
     private fun getStringFromList(list: List<String>): String {
-        var str = ""
+        var str = StringBuilder()
 
         for (s in list) {
-            str = str.plus(s + " ")
+            str = str.append(s + " ")
         }
 
-        return str.trim()
+        return str.toString().trim()
     }
 
-    fun stopOrStartShopWorker() {
+    fun stopOrStartShopWorker(toOn: Boolean) {
         val isWorkerWork = sharedPreferences.getBoolean(WORKER_WORK, true)
         Log.d("stat worker", isWorkerWork.toString())
-        if(isWorkerWork) {
+
+        if (isWorkerWork && toOn) return
+
+        if(!toOn) {
             WorkManager.getInstance(context).cancelUniqueWork(ShopWorker.SHOP_WORKER)
         }else{
             val constraints = Constraints
@@ -91,7 +95,7 @@ class SettingsViewModel(val context: Context) : ViewModel() {
             WorkManager.getInstance(context).enqueue(workRequest)
         }
 
-        saveStateWorker(!isWorkerWork)
+        saveStateWorker(toOn)
     }
 
     fun saveStateWorker(isWork: Boolean) {

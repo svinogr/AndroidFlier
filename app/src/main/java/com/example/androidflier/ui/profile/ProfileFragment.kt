@@ -48,10 +48,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         setSpinners()
         setEditTags()
         setObservers()
-        setSwitch()
 
         settingsModel.getSettings()
-        hideOrShowSettings()
+        setSwitch()
+
+        //  hideOrShowSettings()
 
         return binding.root
     }
@@ -67,14 +68,14 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                 Log.d(TAG, "${switchOnOf.isChecked} switch")
                 hideOrShowSettings()
-                stopOrStartShopWorker()
+                stopOrStartShopWorker(isChecked)
             }
         })
     }
 
-    private fun stopOrStartShopWorker() {
-        settingsModel.stopOrStartShopWorker()
-     }
+    private fun stopOrStartShopWorker(toOn: Boolean) {
+        settingsModel.stopOrStartShopWorker(toOn)
+    }
 
     private fun hideOrShowSettings() {
         timeSpinner.isEnabled = switchOnOf.isChecked
@@ -84,10 +85,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
 
     private fun setObservers() {
         settingsObserver = Observer {
+            Log.d(TAG, "${switchOnOf.isChecked} observ")
             switchOnOf.isChecked = it.on
             radiusSpinner.setSelection(it.radius)
             timeSpinner.setSelection(it.timePeriod)
-
+            hideOrShowSettings()
             settings.on = it.on
             settings.radius = it.radius
             settings.timePeriod = it.timePeriod

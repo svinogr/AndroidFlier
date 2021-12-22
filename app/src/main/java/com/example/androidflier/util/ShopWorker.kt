@@ -22,7 +22,7 @@ class ShopWorker(
         return Result.success()
     }
 
-    companion object{
+    companion object {
         const val SHOP_WORKER = "shop worker"
     }
 
