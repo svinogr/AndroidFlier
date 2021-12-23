@@ -1,11 +1,18 @@
 package com.example.androidflier.ui.profile
 
+import android.Manifest
+import android.app.AlertDialog
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +32,11 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     private val binding get() = _binding!!
     private lateinit var settings: SettingsSearch
     private lateinit var settingsObserver: Observer<SettingsSearch>
+
+    private val requestFeatureLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission(),
+        ::onGotPermissionsResultForFeature
+    )
 
     companion object {
         const val TAG = "profile fragment"
@@ -50,9 +62,8 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         setObservers()
 
         settingsModel.getSettings()
-        setSwitch()
 
-        //  hideOrShowSettings()
+        setSwitch()
 
         return binding.root
     }
@@ -67,7 +78,9 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         switchOnOf.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                 Log.d(TAG, "${switchOnOf.isChecked} switch")
-                hideOrShowSettings()
+                if (isChecked) requestFeatureLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+
+                  hideOrShowSettings()
                 stopOrStartShopWorker(isChecked)
             }
         })
@@ -78,6 +91,7 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     }
 
     private fun hideOrShowSettings() {
+        Log.d(TAG, "${switchOnOf.isChecked} hide settings")
         timeSpinner.isEnabled = switchOnOf.isChecked
         radiusSpinner.isEnabled = switchOnOf.isChecked
         tagEdit.isEnabled = switchOnOf.isChecked
@@ -129,39 +143,6 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
                 arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
                 radiusSpinner.adapter = arrayAdapter
             }
-
-        /* timeSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-             override fun onItemSelected(
-                 parent: AdapterView<*>?,
-                 view: View?,
-                 position: Int,
-                 id: Long
-             ) {
-                 Log.d("TIME", parent?.getItemAtPosition(position).toString())
-                 settings.timePeriod = position
-             }
-
-             override fun onNothingSelected(parent: AdapterView<*>?) {
-                 TODO("Not yet implemented")
-             }
-         }*/
-
-        /* radiusSpinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-             override fun onItemSelected(
-                 parent: AdapterView<*>?,
-                 view: View?,
-                 position: Int,
-                 id: Long
-             ) {
-                 Log.d("TIME", parent?.getItemAtPosition(position).toString())
-                 settings.radius = position
-             }
-
-             override fun onNothingSelected(parent: AdapterView<*>?) {
-                 TODO("Not yet implemented")
-             }
-         }*/
-
     }
 
     override fun onPause() {
@@ -181,5 +162,53 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
     override fun onDestroy() {
         super.onDestroy()
         settingsModel.settings.removeObserver(settingsObserver)
+    }
+
+    private fun onGotPermissionsResultForFeature(grantedResult: Boolean) {
+        if (grantedResult) {
+            stopOrStartShopWorker(switchOnOf.isChecked)
+        } else {
+            if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
+                Log.d("perm", "not gra forever")
+                //если запретили навсегда
+                switchOnOf.isChecked = false
+                askUserForOpeningSettings()
+            } else {
+                Log.d("perm", "not gra NOT forever")
+                switchOnOf.isChecked = false
+                showDialogWithExplanationAndRequest()
+            }
+        }
+
+        hideOrShowSettings()
+    }
+
+    private fun askUserForOpeningSettings() {
+        val appsettingIntent = Intent(
+            Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+            Uri.fromParts("package", requireActivity().packageName, null)
+        )
+
+        if (requireActivity().packageManager.resolveActivity(
+                appsettingIntent,
+                PackageManager.MATCH_DEFAULT_ONLY
+            ) == null
+        ) {
+            Toast.makeText(requireContext(), "permissions are denied forever :(", Toast.LENGTH_LONG)
+                .show()
+        } else {
+            AlertDialog.Builder(requireContext()).setTitle("Permissions denied")
+                .setMessage("Would you like to open settings?")
+                .setPositiveButton("open") { _, _ ->
+                    startActivity(appsettingIntent)
+                }
+                .create()
+                .show()
+        }
+    }
+
+    private fun showDialogWithExplanationAndRequest() {
+        Toast.makeText(requireContext(), "permissions are need for works", Toast.LENGTH_LONG)
+            .show()
     }
 }

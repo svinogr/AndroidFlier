@@ -39,6 +39,7 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
         ActivityResultContracts.RequestPermission(),
         ::onGotPermissionsResultForFeature
     )
+
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewTab: RecyclerView

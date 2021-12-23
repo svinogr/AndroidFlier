@@ -60,14 +60,14 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
 
 
     fun stopOrStartShopWorker(toOn: Boolean) {
-        val isWorkerWork = sharedPreferences.getBoolean(SHOP_WORKER, true)
+        val isWorkerWork = sharedPreferences.getBoolean(SHOP_WORKER, false)
         Log.d("stat worker", isWorkerWork.toString())
         Log.d("stat worker", toOn.toString())
 
-        if (isWorkerWork && toOn) return
+        if (isWorkerWork && toOn) return // при первом запуске воркера здесь фолс
 
         if (!toOn) {
-            WorkManager.getInstance(context).cancelUniqueWork(ShopWorker.SHOP_WORKER)
+            WorkManager.getInstance(context).cancelUniqueWork(SHOP_WORKER)
         } else {
             val constraints = Constraints
                 .Builder()
@@ -88,7 +88,7 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
     fun saveStateWorker(isWork: Boolean) {
         Log.d("save state work", isWork.toString())
         val edit = sharedPreferences.edit()
-        edit.putBoolean(ShopWorker.SHOP_WORKER, isWork)
+        edit.putBoolean(SHOP_WORKER, isWork)
         edit.apply()
     }
 }
