@@ -5,7 +5,6 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.androidflier.model.Shop
-import com.example.androidflier.model.Stock
 import com.example.androidflier.ui.viewmodels.BaseShopViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope

@@ -57,7 +57,6 @@ class LocationLiveData(context: Context) : LiveData<Location>() {
         startLocationUpdate()
     }
 
-
     override fun onInactive() {
         super.onInactive()
         fusedLocationClient.removeLocationUpdates(locationCallback)

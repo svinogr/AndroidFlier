@@ -3,7 +3,6 @@ package com.example.androidflier.ui.profile
 import android.content.Context
 import android.content.SharedPreferences
 import android.util.Log
-import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -19,7 +18,6 @@ import com.example.androidflier.model.SettingsSearch.Companion.TIME
 import com.example.androidflier.model.SettingsSearch.Companion.WORKER_WORK
 import com.example.androidflier.util.ShopWorker
 import com.example.androidflier.util.ShopWorker.Companion.SHOP_WORKER
-import java.lang.StringBuilder
 
 
 class SettingsViewModel(private val context: Context) : ViewModel() {
@@ -28,8 +26,6 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
     val settings: LiveData<SettingsSearch> = _settings
     private lateinit var settingsSearch: SettingsSearch
     private val TAG = "SettingsViewModel"
-
-
 
     fun getSettings() {
         val flierApp = context as FlierApp
@@ -56,8 +52,6 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
         edit.apply()
         //}
     }
-
-
 
     fun stopOrStartShopWorker(toOn: Boolean) {
         val isWorkerWork = sharedPreferences.getBoolean(SHOP_WORKER, false)

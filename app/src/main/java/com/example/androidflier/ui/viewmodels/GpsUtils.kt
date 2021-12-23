@@ -1,3 +1,4 @@
+/*
 package com.example.androidflier.ui.viewmodels
 
 import android.app.Activity
@@ -6,7 +7,6 @@ import android.content.IntentSender
 import android.location.LocationManager
 import android.util.Log
 import android.widget.Toast
-import com.example.androidflier.GPS_REQUEST
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.LocationServices
@@ -66,4 +66,4 @@ class GpsUtils(private val context: Context) {
     interface OnGpsListener {
         fun gpsStatus(isGPSEnable: Boolean)
     }
-}
+}*/

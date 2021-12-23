@@ -133,12 +133,10 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
                 //если запретили навсегда
                 askUserForOpeningSettings()
                 refreshLayout.isRefreshing = false
-
             } else {
                 Log.d("perm", "not gra NOT forever")
                 showDialogWithExplanationAndRequest()
                 refreshLayout.isRefreshing = false
-
             }
         }
     }
@@ -211,7 +209,6 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
         }
 
         shopsViewModel.message.observe(viewLifecycleOwner, messageObserver)
-
 
         tabsObserver = Observer {
             Log.d("DashboardViewModel state", viewLifecycleOwner.lifecycle.currentState.toString())

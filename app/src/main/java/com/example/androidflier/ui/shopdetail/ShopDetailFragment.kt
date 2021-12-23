@@ -180,8 +180,6 @@ class ShopDetailFragment : Fragment(R.layout.fragment_shop_detail),
         bottomSheetBehaviorStock.state = BottomSheetBehavior.STATE_HIDDEN
         bottomSheetBehaviorStock.peekHeight = 340
         bottomSheetBehaviorStock.isHideable = true
-
-
     }
 
     override fun onRefresh() {
