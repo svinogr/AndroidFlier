@@ -23,6 +23,7 @@ const val SHOP_COL_DESCRIPTION = "description"
 const val SHOP_COL_URL = "url"
 const val SHOP_COL_IMG = "img"
 const val SHOP_COL_FAVORITE = "favorite"
+const val SHOP_COL_COUNT_STOCKS = "count_stocks"
 const val SHOP_COLL_PHONE = "phone"
 
 const val CREATE_TABLE_SHOP =
@@ -35,6 +36,8 @@ const val CREATE_TABLE_SHOP =
             SHOP_COL_COORDLNT + " NUMERIC, " +
             SHOP_COL_IMG + " CHARACTER VARYING(200), " +
             SHOP_COL_URL + " CHARACTER VARYING(200), " +
+            SHOP_COL_FAVORITE + " INTEGER, " +
+            SHOP_COL_COUNT_STOCKS + " INTEGER, " +
             SHOP_COLL_PHONE + " CHARACTER VARYING(200))"
 
 private const val SQL_DELETE_TABLE_SHOP = "DROP TABLE IF EXISTS $TABLENAME"
@@ -75,6 +78,8 @@ class DataBaseHelper(var context: Context) :
             put(SHOP_COL_DESCRIPTION, shop.description)
             put(SHOP_COL_URL, shop.url)
             put(SHOP_COL_IMG, shop.img)
+            put(SHOP_COL_FAVORITE, if (shop.favoriteStatus) 1 else 0)
+            put(SHOP_COL_COUNT_STOCKS, shop.stocks.size)
             put(SHOP_COLL_PHONE, shop.phone)
         }
 
@@ -100,6 +105,26 @@ class DataBaseHelper(var context: Context) :
         return list
     }
 
+    fun getAllFavoriteShop(): List<Shop> {
+        val list = mutableListOf<Shop>()
+        val writableDatabase = instance!!.writableDatabase
+        val query = writableDatabase.query(TABLENAME, null,
+            "$SHOP_COL_FAVORITE = ?", arrayOf("1"), null, null, null)
+
+        with(query) {
+            while (moveToNext()) {
+                val shop = shopFromCursor(this)
+                list.add(shop)
+            }
+        }
+
+        query.close()
+        writableDatabase.close()
+
+        return list
+    }
+
+
     private fun shopFromCursor(cursor: Cursor?): Shop {
         return Shop(
             id = cursor!!.getLong(cursor.getColumnIndexOrThrow(SHOP_COL_ID)),
@@ -116,7 +141,8 @@ class DataBaseHelper(var context: Context) :
             img = cursor.getString(cursor.getColumnIndexOrThrow(SHOP_COL_IMG)),
             phone = cursor.getString(cursor.getColumnIndexOrThrow(SHOP_COLL_PHONE)),
             stocks = mutableListOf<Stock>(),
-            favoriteStatus = true
+            countStock = cursor.getInt(cursor.getColumnIndexOrThrow(SHOP_COL_COUNT_STOCKS)),
+            favoriteStatus = cursor.getInt(cursor.getColumnIndexOrThrow(SHOP_COL_FAVORITE)) == 1
         )
     }
 

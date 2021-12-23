@@ -72,7 +72,7 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
         }
     }
 
-     fun refreshData() {
+    fun refreshData() {
         getShop()
     }
 
@@ -92,7 +92,8 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
             img = "",
             favoriteStatus = false,
             stocks = mutableListOf(),
-            phone = ""
+            phone = "",
+            countStock = 0
         )
     }
 }

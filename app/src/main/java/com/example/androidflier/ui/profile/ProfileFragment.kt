@@ -78,9 +78,12 @@ class ProfileFragment : Fragment(R.layout.fragment_profile) {
         switchOnOf.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                 Log.d(TAG, "${switchOnOf.isChecked} switch")
-                if (isChecked) requestFeatureLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                if (isChecked) {
+                    requestFeatureLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+                    return
+                }
 
-                  hideOrShowSettings()
+                hideOrShowSettings()
                 stopOrStartShopWorker(isChecked)
             }
         })

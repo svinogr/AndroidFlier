@@ -7,6 +7,10 @@ class ManagerLocalStorage(context: Context) : LocalDataStorageable {
     private val db = DataBaseHelper.getInstance(context)
 
     override fun getAllFavoriteShops(): List<Shop> {
+        return db.getAllFavoriteShop()
+    }
+
+    override fun getAllShops(): List<Shop> {
         return db.getAllShop()
     }
 
