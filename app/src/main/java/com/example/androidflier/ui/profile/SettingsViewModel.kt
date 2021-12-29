@@ -61,6 +61,7 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
         if (isWorkerWork && toOn) return // при первом запуске воркера здесь фолс
 
         if (!toOn) {
+            Log.d("stop worker in model", toOn.toString())
             WorkManager.getInstance(context).cancelUniqueWork(SHOP_WORKER)
         } else {
             val constraints = Constraints
