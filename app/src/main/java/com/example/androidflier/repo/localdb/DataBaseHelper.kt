@@ -82,8 +82,33 @@ class DataBaseHelper(var context: Context) :
             put(SHOP_COL_COUNT_STOCKS, shop.stocks.size)
             put(SHOP_COLL_PHONE, shop.phone)
         }
+        Log.d("Save", shop.toString())
 
         writableDatabase.insert(TABLENAME, null, contValue)
+        writableDatabase.close()
+    }
+
+    fun update(shop: Shop) {
+        val writableDatabase = instance!!.writableDatabase
+
+        Log.d("Update", shop.toString())
+        val contValue = ContentValues().apply {
+            put(SHOP_COL_ID, shop.id)
+            put(SHOP_COL_USERID, shop.userId)
+            put(SHOP_COL_COORDLAT, shop.coordLat)
+            put(SHOP_COL_COORDLNT, shop.coordLng)
+            put(SHOP_COL_TITLE, shop.title)
+            put(SHOP_COL_ADDRESS, shop.address)
+            put(SHOP_COL_DESCRIPTION, shop.description)
+            put(SHOP_COL_URL, shop.url)
+            put(SHOP_COL_IMG, shop.img)
+            put(SHOP_COL_FAVORITE, if (shop.favoriteStatus) 1 else 0)
+            put(SHOP_COL_COUNT_STOCKS, shop.stocks.size)
+            put(SHOP_COLL_PHONE, shop.phone)
+        }
+        Log.d("Update", shop.toString())
+
+        writableDatabase.update(TABLENAME,  contValue, "id=?", arrayOf(shop.id.toString()))
         writableDatabase.close()
     }
 

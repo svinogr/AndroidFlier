@@ -16,7 +16,9 @@ class RetrofitInst {
 
     companion object {
         private lateinit var instance: RetrofitInst
-        const val BASE_URL = "http://192.168.43.214:8081/"
+        //TODO оставть то что правильно для подключения к серверу
+        //const val BASE_URL = "http://192.168.43.214:8081/"
+        const val BASE_URL = "http://10.0.2.2:8081/"
         const val IMG_SHOP_URL = BASE_URL + "api/img/shop/"
         const val IMG_STOCK_URL = BASE_URL + "api/img/stock/"
 

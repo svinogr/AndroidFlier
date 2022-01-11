@@ -18,6 +18,10 @@ class ManagerLocalStorage(context: Context) : LocalDataStorageable {
         db.save(shop)
     }
 
+    override fun update(shop: Shop) {
+        db.update(shop)
+    }
+
     override fun delete(shop: Shop): Int {
         return db.delete(shop)
     }

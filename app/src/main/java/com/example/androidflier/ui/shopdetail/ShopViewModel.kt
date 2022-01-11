@@ -41,10 +41,10 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
                         val shop = response.body()
 
                         if (shop != null) {
-                            val shopIs = localDb.hasItInDd(id)
+                            val shopIs = localDb.getShopById(id)
 
-                            if (shopIs) {
-                                shop.favoriteStatus = true
+                            if (shopIs != null) {
+                                shop.favoriteStatus = shopIs.favoriteStatus
                             }
 
                             _shop.postValue(shop!!)
@@ -58,17 +58,20 @@ class ShopViewModel(private val id: Long, context: Application) : BaseShopViewMo
 
     fun changeFavoriteStatus() {
         GlobalScope.launch(Dispatchers.IO) {
-            val deleteShop = _shop.value!!
-            val deleteRow = localDb.delete(deleteShop)
+            val saveOrUpdateShop = _shop.value!!
+           // val deleteRow = localDb.delete(deleteShop)
 
-            if (deleteRow > 0) {
-                deleteShop.favoriteStatus = false
+            val byId = localDb.getShopById(saveOrUpdateShop.id)
+
+            if (byId != null) {
+                saveOrUpdateShop.favoriteStatus = !byId.favoriteStatus
+              localDb.update(saveOrUpdateShop)
             } else {
-                localDb.save(deleteShop)
-                deleteShop.favoriteStatus = true
+                saveOrUpdateShop.favoriteStatus = true
+                localDb.save(saveOrUpdateShop)
             }
 
-            _shop.postValue(deleteShop)
+            _shop.postValue(saveOrUpdateShop)
         }
     }
 
