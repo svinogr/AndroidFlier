@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/tab_cardView"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/cards_stock_vertical_margin"
+    android:layout_marginStart="@dimen/cards_stock_vertical_margin"
+    android:layout_marginEnd="@dimen/cards_stock_vertical_margin"
+    android:layout_marginBottom="@dimen/cards_stock_vertical_margin"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="@dimen/cards_stock_elevation">
+    <TextView
+        android:id="@+id/tab_layout_text"
+        android:layout_width="wrap_content"
+        android:padding="8dp"
+        tools:text="dwjhdkjwhdkwhdkhwk"
+        android:layout_height="wrap_content" />
+
+</androidx.cardview.widget.CardView>

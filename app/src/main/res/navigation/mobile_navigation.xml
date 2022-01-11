@@ -7,19 +7,45 @@
 
     <fragment
         android:id="@+id/navigation_home"
-        android:name="com.example.androidflier.ui.home.HomeFragment"
-        android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        android:name="com.example.androidflier.ui.nearest.NearestFragment"
+        android:label="@string/title_nearest"
+        tools:layout="@layout/fragment_nearest" >
+        <action
+            android:id="@+id/action_navigation_home_to_shopDetailFragment"
+            app:destination="@id/shopDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
-        android:name="com.example.androidflier.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
+        android:name="com.example.androidflier.ui.allshops.DashboardFragment"
+        android:label="@string/title_all"
+        tools:layout="@layout/fragment_dashboard" >
+        <action
+            android:id="@+id/action_navigation_dashboard_to_shopDetailFragment"
+            app:destination="@id/shopDetailFragment" />
+    </fragment>
 
     <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.example.androidflier.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
+        android:id="@+id/navigation_favorite"
+        android:name="com.example.androidflier.ui.favorites.FavoriteFragment"
+        android:label="@string/title_favorite"
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_navigation_favorite_to_shopDetailFragment"
+            app:destination="@id/shopDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/shopDetailFragment"
+        android:name="com.example.androidflier.ui.shopdetail.ShopDetailFragment"
+        android:label="@string/title_shop_detail"
+        tools:layout="@layout/fragment_shop_detail" />
+
+    <fragment
+        android:id="@+id/navigation_profile"
+        android:name="com.example.androidflier.ui.profile.ProfileFragment"
+        android:label="@string/title_profile"
+        tools:layout="@layout/fragment_profile"
+        />
+
 </navigation>

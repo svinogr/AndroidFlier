@@ -1,0 +1,20 @@
+package com.example.androidflier.model
+
+data class Shop(
+    var id: Long,
+    var created: String,
+    var updated: String,
+    var status: String,
+    var userId: Long,
+    var coordLat: Double,
+    var coordLng: Double,
+    var title: String,
+    var address: String,
+    var description: String,
+    var url: String,
+    var img: String,
+    var favoriteStatus: Boolean = false,
+    var phone: String,
+    var countStock: Int,
+    var stocks: MutableList<Stock>
+)

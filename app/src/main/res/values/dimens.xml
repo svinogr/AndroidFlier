@@ -1,5 +1,30 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
+    <dimen name="main_activity_coord_lay_padd_top">56dp</dimen>
+
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- card stock -->
+    <dimen name="cards_stock_vertical_margin">8dp</dimen>
+    <dimen name="cards_stock_corner_radius">4dp</dimen>
+    <dimen name="cards_stock_elevation">4dp</dimen>
+    <dimen name="cards_stock_height">250dp</dimen>
+    <dimen name="cards_stock_image_height">150dp</dimen>
+    <dimen name="cards_stock_text_margin_end">8dp</dimen>
+    <dimen name="cards_stock_text_margin_start">8dp</dimen>
+    <dimen name="cards_stock_text_margin_top">8dp</dimen>
+       <!-- card shop -->
+    <dimen name="cards_shop_corner_radius">5dp</dimen>
+    <dimen name="cards_shop_margin_bottom">8dp</dimen>
+    <dimen name="cards_shop_image_width">100dp</dimen>
+    <dimen name="cards_shop_image_height">100dp</dimen>
+    <dimen name="cards_shop_image_margin_start">8dp</dimen>
+    <dimen name="cards_shop_image_margin_top">8dp</dimen>
+    <dimen name="cards_shop_image_margin_bottom">8dp</dimen>
+    <dimen name="cards_shop_title_margin_start">8dp</dimen>
+    <dimen name="cards_shop_title_margin_top">8dp</dimen>
+    <dimen name="cards_shop_title_margin_end">8dp</dimen>
+    <dimen name="cards_shop_title_margin_bottom">8dp</dimen>
+    <dimen name="cards_shop_margin_top">2dp</dimen>
+
 </resources>
