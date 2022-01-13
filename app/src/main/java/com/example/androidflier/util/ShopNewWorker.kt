@@ -1,11 +1,11 @@
 package com.example.androidflier.util
 
 import android.annotation.SuppressLint
-import android.app.Notification
 import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
 import android.os.Looper
+import android.service.autofill.LuhnChecksumValidator
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -26,10 +26,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShopWorker(
+class ShopNewWorker(
     val context: Context,
     val workerParameters: WorkerParameters
 ) : Worker(context, workerParameters) {
+    private lateinit var allLocalShops: List<Shop>
     private lateinit var locationCallback: LocationCallback
     private var locationRepo: LocationReposable
     private var shopRepo: ShopRepositoryable
@@ -50,19 +51,20 @@ class ShopWorker(
 
 
         //TODO получаем список магазинов
+
         val locationRequest = LocationRequest.create()?.apply {
             interval = 10000
             fastestInterval = 5000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
-         locationCallback = object : LocationCallback() {
+        locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
-             /*   for (location in locationResult.locations) {
-                    Log.d("worker", "callback ${location.latitude} ${location.longitude}")
-                    magic()
-                }*/
+                /*   for (location in locationResult.locations) {
+                       Log.d("worker", "callback ${location.latitude} ${location.longitude}")
+                       magic()
+                   }*/
 
                 magic(locationResult.locations[0])
 
@@ -74,53 +76,26 @@ class ShopWorker(
         locationRepo.getLocateClient()
             .requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
 
-     /*   location.getLocateClient().lastLocation.addOnCompleteListener { location ->
-            val loc = location.result
-            Log.d("work loc", location.result.toString())
-            shopRepo.getAllNearestShopsWithSearching(loc, null, listTagFromSharedPref[0])
-                .enqueue(object : Callback<List<Shop>> {
-                    override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
-                        Log.d("ShopWorker", "fail: $t.toString()")
-
-                    }
-
-                    override fun onResponse(
-                        call: Call<List<Shop>>,
-                        response: Response<List<Shop>>
-                    ) {
-                        Log.d("ShopWorker", "resp: $response.toString()")
-                        if (response.code() == 200) {
-                            val listMessages = response.body() ?: return
-                            //TODO переделать на что нить побыстрее
-                            listMessages.forEach {
-                                if (!allLocalShops.contains(it)) {
-                                    summaryShopList.add(it)
-                                }
-                            }
-
-                            sendNotification(summaryShopList)
-                        }
-                    }
-                })
-        }*/
-
-
-
         return Result.success()
     }
 
     @SuppressLint("MissingPermission")
     private fun magic(location: Location?) {
-
+// получаем список тэгов для поиска из установленных пользователем настроек
         val listTagFromSharedPref = SettingsSearch.getListTagFromSharedPref(preff)
+        // для теста берем один тэк
         val testSearchValue = listTagFromSharedPref[0]
-        val allLocalShops = localDB.getAllShops()
-        val summaryShopList = mutableListOf<Shop>()
+        // получаем все магазы из локальной базы
+        //val allLocalShops = localDB.getAllShops()
+        //создаем сумарный список
+        // val summaryShopList = mutableListOf<Shop>()
+        //
         locationRepo.getLocateClient().lastLocation.addOnCompleteListener { location ->
             val loc = location.result
             Log.d("work loc", location.result.toString())
             shopRepo.getAllNearestShopsWithSearching(loc, null, " ")
                 .enqueue(object : Callback<List<Shop>> {
+                    //если ошибка получения данныйх то код здесь
                     override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
                         Log.d("ShopWorker", "fail: $t.toString()")
 
@@ -133,69 +108,92 @@ class ShopWorker(
                         Log.d("ShopWorker", "resp: $response.toString()")
                         if (response.code() == 200) {
                             val listMessages = response.body() ?: return
-                            //TODO переделать на что нить побыстрее
-                            listMessages.forEach {
-                                if (!allLocalShops.contains(it)) {
-                                    summaryShopList.add(it)
-                                }
-                            }
 
-                            sendNotification(summaryShopList)
+                            setNotification(listMessages)
                         }
                     }
                 })
         }
     }
 
-
-    //TODO проверяем есть ли в базе они. Если кокого то нет. то пишем его в базу и оповещаем о нем
-    //TODO сравниваем колво акции по полученым магазам. При изменении кол-ва (и ID)  уведомляем и пшем новое значение колва в базу
-    /*   val listTagFromSharedPref = SettingsSearch.getListTagFromSharedPref(preff)
-       location.getLocateClient().lastLocation.addOnCompleteListener { location ->
-           val loc = location.result
-           shopRepo.getAllNearestShopsWithSearching(loc, null, listTagFromSharedPref[0])
-               .enqueue(object : Callback<List<Shop>> {
-                   override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
-                       Log.d("ShopWorker", "fail: $t.toString()")
-
-                   }
-
-                   override fun onResponse(
-                       call: Call<List<Shop>>,
-                       response: Response<List<Shop>>
-                   ) {
-                       Log.d("ShopWorker", "resp: $response.toString()")
-                       if (response.code() != 200) {
-                        *//*   message.postValue(response.message())
-                            _shops.postValue(listOf())*//*
-                        } else {
-                    *//*        _shops.postValue(response.body())*//*
-                        }
-                    }
-                })
-        }*/
-
-
     companion object {
         const val SHOP_WORKER = "shop worker"
     }
 
-    private fun sendNotification(list: List<Shop>) {
-        val notification = createNotification(list.size)
-        val notificationManager = NotificationManagerCompat.from(context)
-        notificationManager.notify(0, notification)
+    private fun setNotification(list: List<Shop>) {
+        if (list.size < 0) return
+
+        allLocalShops = localDB.getAllShops()
+
+        createNotificationNewShops(list)
+        createNotificationNewStocks(list)
     }
 
-    private fun createNotification(size: Int): Notification {
-        return NotificationCompat
+    private fun createNotificationNewStocks(list: List<Shop>) {
+        val shopsWithNewStocks = checkStocksInLocalDB(list)
+        if(shopsWithNewStocks.isEmpty()) return
+
+        val notification = NotificationCompat
+            .Builder(context, NOTIFICATION_CHANNEL_ID)
+            .setTicker(context.resources.getString(R.string.new_stock_title_test))
+            .setSmallIcon(R.drawable.ic_dashboard_black_24dp)
+            .setContentTitle("Новые скидки")
+            .setContentText("${shopsWithNewStocks.size} магазинов обновили скидки")
+            //.setContentIntent()
+            .setAutoCancel(true)
+            .build()
+
+        val notificationManager = NotificationManagerCompat.from(context)
+        notificationManager.notify(1, notification)
+    }
+
+    private fun checkStocksInLocalDB(list: List<Shop>): List<Shop> {
+        val summaryShopList = mutableListOf<Shop>()
+
+        for (i in 0..list.size - 1) {
+           for(j in 0..allLocalShops.size - 1) {
+               // проверяем чтобы количество stock с сервера для магазина было не равно записаному ранее в базу
+               if(list[i].id == allLocalShops[j].id && list[i].stocks.size != allLocalShops[j].countStock ) {
+                   summaryShopList.add(list[i])
+               //TODO localDB.update(list[i])  раскоментить в бою
+               }
+           }
+        }
+
+        return summaryShopList
+    }
+
+    private fun createNotificationNewShops(list: List<Shop>) {
+        val newShops = checkShopsInLocalDB(list)
+        if(newShops.isEmpty()) return
+
+        val notification = NotificationCompat
             .Builder(context, NOTIFICATION_CHANNEL_ID)
             .setTicker(context.resources.getString(R.string.new_stock_title_test))
             .setSmallIcon(R.drawable.ic_dashboard_black_24dp)
             .setContentTitle("Рядом новые магазины")
-            .setContentText("$size магазинов")
+            .setContentText("${newShops.size} магазинов")
             //.setContentIntent()
             .setAutoCancel(true)
             .build()
+
+        val notificationManager = NotificationManagerCompat.from(context)
+        notificationManager.notify(0, notification)
+    }
+
+
+    //  возвращает только новые магазины ненаходящиеся в базе
+    private fun checkShopsInLocalDB(list: List<Shop>): List<Shop> {
+        val summaryShopList = mutableListOf<Shop>()
+
+        list.forEach {
+            if (!allLocalShops.contains(it)) {
+                summaryShopList.add(it)
+                // TODO   localDB.save(list[i])  раскоментить в бою
+            }
+        }
+
+        return summaryShopList
     }
 
     override fun onStopped() {
