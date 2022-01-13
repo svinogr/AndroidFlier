@@ -16,8 +16,8 @@ import com.example.androidflier.model.SettingsSearch.Companion.RADIUS
 import com.example.androidflier.model.SettingsSearch.Companion.TAGS_EDIT
 import com.example.androidflier.model.SettingsSearch.Companion.TIME
 import com.example.androidflier.model.SettingsSearch.Companion.WORKER_WORK
-import com.example.androidflier.util.ShopWorker
-import com.example.androidflier.util.ShopWorker.Companion.SHOP_WORKER
+import com.example.androidflier.util.ShopNewWorker
+import com.example.androidflier.util.ShopNewWorker.Companion.SHOP_WORKER
 
 
 class SettingsViewModel(private val context: Context) : ViewModel() {
@@ -70,7 +70,7 @@ class SettingsViewModel(private val context: Context) : ViewModel() {
                 .build()
 
             val workRequest = OneTimeWorkRequest
-                .Builder(ShopWorker::class.java)
+                .Builder(ShopNewWorker::class.java)
                 .setConstraints(constraints)
                 .build()
 
