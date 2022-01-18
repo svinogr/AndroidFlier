@@ -30,7 +30,7 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
                     override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
                         Log.d("DashboardViewModel", "fail: $t.toString()")
                         _message.postValue(t.message)
-                        _shops.postValue(listOf())
+                        _shops.postValue(mutableListOf())
                     }
 
                     override fun onResponse(
@@ -40,9 +40,12 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
                         Log.d("DashboardViewModel", "resp: $response.toString()")
                         if (response.code() != 200) {
                             message.postValue(response.message())
-                            _shops.postValue(listOf())
+                            _shops.postValue(mutableListOf())
                         } else {
-                            _shops.postValue(response.body())
+                            /* _shops.postValue(response.body())*/
+                            val m = mutableListOf<Shop>()
+                            m.addAll(response.body()!!)
+                            _shops.value = m
                         }
                     }
                 })
@@ -54,5 +57,38 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
         allShops(selectedTab, searchText)
         allTabs(selectedTab)
         Log.d("DashboardViewModel", "$searchText  $selectedTab")
+    }
+
+    fun loadMore(tab: Tab?, searchText: String) {
+        Log.d("DashboardViewModel", "Load more")
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(delayRefresh)
+
+            shopRepo.getAllShopsWithSearching(tab, searchText, (_shops.value!!.size).toString())
+                .enqueue(object : Callback<List<Shop>> {
+                    override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
+                        Log.d("DashboardViewModel", "fail: $t.toString()")
+                        _message.postValue(t.message)
+                        _shops.postValue(mutableListOf())
+                    }
+
+                    override fun onResponse(
+                        call: Call<List<Shop>>,
+                        response: Response<List<Shop>>
+                    ) {
+                        Log.d("DashboardViewModel", "resp: $response.toString()")
+                        if (response.code() != 200) {
+                            message.postValue(response.message())
+                            _shops.postValue(mutableListOf())
+                        } else {
+                            /* _shops.postValue(response.body())*/
+                            val m = mutableListOf<Shop>()
+                            m.addAll(response.body()!!)
+                            _shops.value = (_shops.value)?.plus(m)
+                        }
+                    }
+                })
+        }
+
     }
 }

@@ -24,7 +24,7 @@ class ShopViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private var img: ImageView = itemView.findViewById(R.id.shop_cardView_imageView)
 
     fun bind(shop: Shop) {
-        title.text = shop.title
+        title.text = shop.title + shop.id
         address.text = shop.address
 
         val transformation = MultiTransformation(CenterCrop(), RoundedCorners(16))

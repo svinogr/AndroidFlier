@@ -28,14 +28,14 @@ class ShopRepository private constructor() : ShopRepositoryable {
         return shopApi.getAllShop()
     }
 
-    override fun getAllShopsWithSearching(tab: Tab?, search: String): Call<List<Shop>> {
+    override fun getAllShopsWithSearching(tab: Tab?, search: String, from: String): Call<List<Shop>> {
         Log.d("getAllShopsWithSearching", "getAllShopsWithSearching")
         var tabSearchText = ""
         if (tab != null) tabSearchText = tab.name
 
         val searchText = search.trim()
 
-        return shopApi.getAllShopWithSearching(tabSearchText, searchText)
+        return shopApi.getAllShopWithSearching(tabSearchText, searchText, from)
     }
 
     override fun getShopWithStocks(shopId: Long): Call<Shop> {
