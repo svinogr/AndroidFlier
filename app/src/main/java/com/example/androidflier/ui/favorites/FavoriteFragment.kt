@@ -61,9 +61,13 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
     private fun setObservers() {
         shopObserver = Observer<List<Shop>> {
             if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if(adapter.listShops.isEmpty()) {
+
+                    recyclerView.scheduleLayoutAnimation()
+                }
+
                 adapter.listShops = it
                 adapter.notifyDataSetChanged()
-                recyclerView.scheduleLayoutAnimation()
 
                 refreshLayout.isRefreshing = false
             }

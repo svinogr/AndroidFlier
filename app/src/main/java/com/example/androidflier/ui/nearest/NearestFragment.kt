@@ -190,9 +190,12 @@ class NearestFragment : Fragment(R.layout.fragment_nearest), SwipeRefreshLayout.
     private fun setObservers() {
         shopObserver = Observer {
             if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if(adapter.listShops.isEmpty()) {
+                    recyclerView.scheduleLayoutAnimation()
+                }
+
                 adapter.listShops = it
                 adapter.notifyDataSetChanged()
-                recyclerView.scheduleLayoutAnimation()
                 refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
             }
         }

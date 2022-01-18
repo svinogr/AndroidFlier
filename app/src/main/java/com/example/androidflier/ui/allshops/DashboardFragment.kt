@@ -18,6 +18,7 @@ import com.example.androidflier.R
 import com.example.androidflier.adapter.ShopCardAdapter
 import com.example.androidflier.adapter.TabCardAdapter
 import com.example.androidflier.adapter.holder.TabViewHolder
+import com.example.androidflier.adapter.scrolListener.EndlessScrollListener
 import com.example.androidflier.databinding.FragmentDashboardBinding
 import com.example.androidflier.model.Shop
 import com.example.androidflier.model.Tab
@@ -41,6 +42,7 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     private lateinit var searchView: SearchView
     private var selectedTab: Tab? = null
     private var searchText = ""
+    private var scrollLoading = false
 
     companion object {
         const val TAG = "DashboardFragment"
@@ -101,9 +103,11 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
     private fun setObservers() {
         shopObserver = Observer {
             if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if (adapter.listShops.isEmpty()) {
+                    recyclerView.scheduleLayoutAnimation()
+                }
                 adapter.listShops = it
                 adapter.notifyDataSetChanged()
-                recyclerView.scheduleLayoutAnimation()
                 Log.d("ref", "setRecyclerView")
                 refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
             }
@@ -167,11 +171,28 @@ class DashboardFragment : Fragment(R.layout.fragment_dashboard),
 
         adapterTab = TabCardAdapter(tabSelectable = this)
         recyclerViewTab.adapter = adapterTab
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                if (lManager.findLastCompletelyVisibleItemPosition() == shopsViewModel.shops.value!!.size - 1) {
+                    refreshLayout.isRefreshing = true
+                    shopsViewModel.loadMore(selectedTab, searchText)
+                    scrollLoading = true
+                }
+            }
+        })
     }
 
     override fun onRefresh() {
         Log.d("ref", "onRefresh")
         //  shopsViewModel.refreshData()
+        scrollLoading = false
         shopsViewModel.refreshDataSearch(selectedTab, searchText)
     }
 
