@@ -2,11 +2,9 @@ package com.example.androidflier.ui.allshops
 
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.androidflier.model.Shop
 import com.example.androidflier.model.Tab
-import com.example.androidflier.ui.viewmodels.BaseShopViewModel
+import com.example.androidflier.ui.viewmodels.BaseShopsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -16,12 +14,9 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
-    private val _shops = MutableLiveData<List<Shop>>()
-    val shops: LiveData<List<Shop>> = _shops
+class DashboardViewModel(context: Application) : BaseShopsViewModel(context) {
 
-
-    private fun allShops(tab: Tab?, searchText: String) {
+    override fun allShops(tab: Tab?, searchText: String) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
@@ -42,10 +37,14 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
                             message.postValue(response.message())
                             _shops.postValue(mutableListOf())
                         } else {
-                            /* _shops.postValue(response.body())*/
                             val m = mutableListOf<Shop>()
                             m.addAll(response.body()!!)
-                            _shops.value = m
+
+                            if (_shops.value.isNullOrEmpty()) {
+                                _shops.value = m
+                            } else {
+                                _shops.value = (_shops.value)?.plus(m)
+                            }
                         }
                     }
                 })
@@ -53,13 +52,13 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
     }
 
 
-    fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
+    override fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
         allShops(selectedTab, searchText)
         allTabs(selectedTab)
         Log.d("DashboardViewModel", "$searchText  $selectedTab")
     }
 
-    fun loadMore(tab: Tab?, searchText: String) {
+    override fun loadMore(tab: Tab?, searchText: String) {
         Log.d("DashboardViewModel", "Load more")
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
@@ -89,6 +88,5 @@ class DashboardViewModel(context: Application) : BaseShopViewModel(context) {
                     }
                 })
         }
-
     }
 }

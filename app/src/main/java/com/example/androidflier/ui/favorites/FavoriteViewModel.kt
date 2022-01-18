@@ -1,21 +1,14 @@
 package com.example.androidflier.ui.favorites
 
 import android.app.Application
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.example.androidflier.FlierApp
-import com.example.androidflier.model.Shop
-import com.example.androidflier.repo.localdb.LocalDataStorageable
-import com.example.androidflier.repo.localdb.ManagerLocalStorage
-import com.example.androidflier.ui.viewmodels.BaseShopViewModel
+import com.example.androidflier.model.Tab
+import com.example.androidflier.ui.viewmodels.BaseShopsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class FavoriteViewModel(context: Application): BaseShopViewModel(context) {
-    private val _shops = MutableLiveData<List<Shop>>()
-    val shops: LiveData<List<Shop>> = _shops
+class FavoriteViewModel(context: Application): BaseShopsViewModel(context) {
 
      fun refreshData() {
         GlobalScope.launch(Dispatchers.IO) {
@@ -28,5 +21,17 @@ class FavoriteViewModel(context: Application): BaseShopViewModel(context) {
                 _shops.postValue(listOf())
             }
         }
+    }
+
+    override fun loadMore(selectedTab: Tab?, searchText: String) {
+
+    }
+
+    override fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
+
+    }
+
+    override fun allShops(tab: Tab?, searchText: String) {
+
     }
 }

@@ -3,12 +3,10 @@ package com.example.androidflier.ui.nearest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.util.Log
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.example.androidflier.model.Shop
 import com.example.androidflier.model.Tab
 import com.example.androidflier.repo.LocationRepo
-import com.example.androidflier.ui.viewmodels.BaseShopViewModel
+import com.example.androidflier.ui.viewmodels.BaseShopsViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -17,13 +15,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class NearestListShopsViewModel(context: Application) : BaseShopViewModel(context) {
-    private val _shops = MutableLiveData<List<Shop>>()
-    val shops: LiveData<List<Shop>> = _shops
+class NearestListShopsViewModel(context: Application) : BaseShopsViewModel(context) {
+
     private val locationReposable = LocationRepo.getInstance(context)
 
     @SuppressLint("MissingPermission")
-    fun allNearestShops(tab: Tab?, searchText: String) {
+    override fun allShops (tab: Tab?, searchText: String) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
@@ -61,9 +58,15 @@ class NearestListShopsViewModel(context: Application) : BaseShopViewModel(contex
         }
     }
 
-    fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
-        allNearestShops(selectedTab, searchText)
+    override fun loadMore(selectedTab: Tab?, searchText: String) {
+
+    }
+
+    override fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
+        allShops(selectedTab, searchText)
         allTabs(selectedTab)
         Log.d("NearestListShopsViewModel", "$searchText  $selectedTab")
     }
+
+
 }

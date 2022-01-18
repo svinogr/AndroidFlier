@@ -4,8 +4,11 @@ import android.app.Application
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.example.androidflier.FlierApp
 import com.example.androidflier.model.Shop
-import com.example.androidflier.ui.viewmodels.BaseShopViewModel
+import com.example.androidflier.repo.ShopRepositoryable
+import com.example.androidflier.repo.localdb.LocalDataStorageable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -14,9 +17,21 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class ShopViewModel(private val id: Long, context: Application) : BaseShopViewModel(context) {
+class ShopViewModel(private val id: Long, context: Application): ViewModel()  {
+    private var shopRepo: ShopRepositoryable
     private var _shop = MutableLiveData<Shop>()
+    var localDb: LocalDataStorageable
+    val _message = MutableLiveData<String>()
+    val message = _message
+    final val delayRefresh: Long = 700
+
     val shop: LiveData<Shop> = _shop
+
+    init {
+        val flierApp = context as FlierApp
+        shopRepo = flierApp.shopRepo
+        localDb = flierApp.localDb
+    }
 
     fun getShop() {
         Log.d("ShopViewModel", "initialize")

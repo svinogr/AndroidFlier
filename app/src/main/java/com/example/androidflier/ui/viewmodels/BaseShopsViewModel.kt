@@ -8,11 +8,9 @@ import androidx.lifecycle.ViewModel
 import com.example.androidflier.FlierApp
 import com.example.androidflier.model.Shop
 import com.example.androidflier.model.Tab
-import com.example.androidflier.repo.ShopRepository
 import com.example.androidflier.repo.ShopRepositoryable
 import com.example.androidflier.repo.TabReposable
 import com.example.androidflier.repo.localdb.LocalDataStorageable
-import com.example.androidflier.repo.retrofit.RetrofitInst
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -21,14 +19,17 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-abstract class BaseShopViewModel(val context: Application): ViewModel() {
+abstract class BaseShopsViewModel(val context: Application) : ViewModel() {
     var shopRepo: ShopRepositoryable
     var tabRepo: TabReposable
     var localDb: LocalDataStorageable
     val _message = MutableLiveData<String>()
     val message = _message
     private val _tabs = MutableLiveData<List<Tab>>()
-    val tabs: LiveData<List<Tab>> = _tabs
+    open val tabs: LiveData<List<Tab>> = _tabs
+
+    val _shops = MutableLiveData<List<Shop>>()
+    val shops: LiveData<List<Shop>> = _shops
 
     final val delayRefresh: Long = 700
 
@@ -77,4 +78,7 @@ abstract class BaseShopViewModel(val context: Application): ViewModel() {
         }
     }
 
+    abstract fun loadMore(selectedTab: Tab?, searchText: String)
+    abstract fun refreshDataSearch(selectedTab: Tab?, searchText: String)
+    abstract fun allShops(tab: Tab?, searchText: String)
 }
