@@ -16,7 +16,7 @@ import retrofit2.Response
 
 class DashboardViewModel(context: Application) : BaseShopsViewModel(context) {
 
-    override fun allShops(tab: Tab?, searchText: String) {
+    override fun getData(tab: Tab?, searchText: String) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
@@ -37,33 +37,38 @@ class DashboardViewModel(context: Application) : BaseShopsViewModel(context) {
                             message.postValue(response.message())
                             _shops.postValue(mutableListOf())
                         } else {
-                            val m = mutableListOf<Shop>()
-                            m.addAll(response.body()!!)
 
                             if (_shops.value.isNullOrEmpty()) {
-                                _shops.value = m
-                            } else {
-                                _shops.value = (_shops.value)?.plus(m)
+                                _shops.value = mutableListOf()
                             }
+
+                            val m = mutableListOf<Shop>()
+                            m.addAll(response.body()!!)
+                            _shops.value = (_shops.value)?.plus(m)
                         }
                     }
                 })
         }
     }
 
+    override fun clearData() {
+        Log.d("DashboardViewModel", "clear")
+        _shops.value = emptyList()
+    }
 
     override fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
-        allShops(selectedTab, searchText)
+        getData(selectedTab, searchText)
         allTabs(selectedTab)
         Log.d("DashboardViewModel", "$searchText  $selectedTab")
     }
 
     override fun loadMore(tab: Tab?, searchText: String) {
         Log.d("DashboardViewModel", "Load more")
+
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
-
-            shopRepo.getAllShopsWithSearching(tab, searchText, (_shops.value!!.size).toString())
+            val from = (_shops.value!!.size).toString()
+            shopRepo.getAllShopsWithSearching(tab, searchText, from)
                 .enqueue(object : Callback<List<Shop>> {
                     override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
                         Log.d("DashboardViewModel", "fail: $t.toString()")
@@ -80,10 +85,12 @@ class DashboardViewModel(context: Application) : BaseShopsViewModel(context) {
                             message.postValue(response.message())
                             _shops.postValue(mutableListOf())
                         } else {
-                            /* _shops.postValue(response.body())*/
+                            //   _shops.postValue(response.body())
                             val m = mutableListOf<Shop>()
                             m.addAll(response.body()!!)
-                            _shops.value = (_shops.value)?.plus(m)
+                            if (!m.isEmpty()) {
+                                _shops.value = (_shops.value)?.plus(m)
+                            }
                         }
                     }
                 })

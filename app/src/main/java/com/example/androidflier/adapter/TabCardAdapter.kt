@@ -37,7 +37,7 @@ class TabCardAdapter(
 
         tabSelectable.withTab(tab)
 
-        notifyDataSetChanged()
+       // notifyDataSetChanged()
     }
 
 }

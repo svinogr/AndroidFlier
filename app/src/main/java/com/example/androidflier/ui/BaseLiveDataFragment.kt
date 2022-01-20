@@ -32,11 +32,11 @@ import com.example.androidflier.ui.viewmodels.BaseShopsViewModel
 abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentDashboard),
     SwipeRefreshLayout.OnRefreshListener,
     TabViewHolder.TabSelectable {
-    private var _binding: FragmentDashboardBinding? = null
     private val requestFeatureLauncher = registerForActivityResult(
         ActivityResultContracts.RequestPermission(),
         ::onGotPermissionsResultForFeature
     )
+    private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
     private lateinit var recyclerView: RecyclerView
     private lateinit var recyclerViewTab: RecyclerView
@@ -46,10 +46,10 @@ abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentD
     private lateinit var shopObserver: Observer<List<Shop>>
     private lateinit var messageObserver: Observer<String>
     private lateinit var tabsObserver: Observer<List<Tab>>
-    private lateinit var refreshLayout: SwipeRefreshLayout
+    open lateinit var refreshLayout: SwipeRefreshLayout
     private lateinit var searchView: SearchView
-    private var selectedTab: Tab? = null
-    private var searchText = ""
+    open var selectedTab: Tab? = null
+    open var searchText = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -68,6 +68,7 @@ abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentD
     }
 
     abstract fun setViewModel()
+    abstract fun isNeedPermissions(): Boolean
 
     private fun setSearchView() {
         searchView = binding.dashboardSeacrh
@@ -107,10 +108,13 @@ abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentD
                 if (adapter.listShops.isEmpty()) {
                     recyclerView.scheduleLayoutAnimation()
                 }
-                adapter.listShops = it
-                adapter.notifyDataSetChanged()
-                Log.d("ref", "setRecyclerView")
-                refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
+
+                if (!it.isEmpty()) {
+                    adapter.listShops = it
+                    adapter.notifyDataSetChanged()
+                    Log.d("ref", "setRecyclerView")
+                    refreshLayout.isRefreshing = false // без этого не закроется прогрес бар
+                }
             }
         }
 
@@ -132,10 +136,11 @@ abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentD
             Log.d("DashboardViewModel state", viewLifecycleOwner.lifecycle.currentState.toString())
             if (viewLifecycleOwner.lifecycle.currentState == Lifecycle.State.RESUMED) {
                 Log.d("TAg", it.toString())
-
-                adapterTab.listTab = it
-                adapterTab.notifyDataSetChanged()
-                recyclerViewTab.scheduleLayoutAnimation()
+                if (!it.isEmpty()) {
+                    adapterTab.listTab = it
+                    adapterTab.notifyDataSetChanged()
+                    recyclerViewTab.scheduleLayoutAnimation()
+                }
             }
         }
 
@@ -184,6 +189,7 @@ abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentD
                 if (lManager.findLastCompletelyVisibleItemPosition() == shopsViewModel.shops.value!!.size - 1) {
                     refreshLayout.isRefreshing = true
                     shopsViewModel.loadMore(selectedTab, searchText)
+                    refreshLayout.isRefreshing = false
                 }
             }
         })
@@ -191,8 +197,11 @@ abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentD
 
     override fun onRefresh() {
         Log.d("ref", "onRefresh")
-        //  shopsViewModel.refreshData()
-        shopsViewModel.refreshDataSearch(selectedTab, searchText)
+        if (isNeedPermissions()) {
+            requestFeatureLauncher.launch(Manifest.permission.ACCESS_FINE_LOCATION)
+        } else {
+            refreshData()
+        }
     }
 
     override fun onDestroyView() {
@@ -205,18 +214,26 @@ abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentD
     }
 
     override fun withTab(tab: Tab) {
+        refreshLayout.isRefreshing = true
+
         selectedTab = if (tab.selected) tab else null
 
-        refreshLayout.isRefreshing = true
-        onRefresh()
+        //onRefresh()
+        if (selectedTab == null) {
+
+            onRefresh()
+        } else {
+            shopsViewModel.clearData()
+
+            shopsViewModel.refreshDataSearch(selectedTab, searchText)
+        }
+
         Log.d("CallbackTab", "$selectedTab.title $selectedTab.selected")
     }
 
-
     private fun onGotPermissionsResultForFeature(grantedResult: Boolean) {
         if (grantedResult) {
-            shopsViewModel.refreshDataSearch(selectedTab, searchText)
-            //  refreshLayout.isRefreshing = false
+            refreshData()
 
         } else {
             if (!shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)) {
@@ -230,6 +247,12 @@ abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentD
                 refreshLayout.isRefreshing = false
             }
         }
+    }
+
+    private fun refreshData() {
+        selectedTab = null
+        shopsViewModel.clearData()
+        shopsViewModel.refreshDataSearch(selectedTab, searchText)
     }
 
     private fun askUserForOpeningSettings() {

@@ -20,7 +20,7 @@ class NearestListShopsViewModel(context: Application) : BaseShopsViewModel(conte
     private val locationReposable = LocationRepo.getInstance(context)
 
     @SuppressLint("MissingPermission")
-    override fun allShops (tab: Tab?, searchText: String) {
+    override fun getData (tab: Tab?, searchText: String) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
@@ -62,8 +62,12 @@ class NearestListShopsViewModel(context: Application) : BaseShopsViewModel(conte
 
     }
 
+    override fun clearData() {
+
+    }
+
     override fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
-        allShops(selectedTab, searchText)
+        getData(selectedTab, searchText)
         allTabs(selectedTab)
         Log.d("NearestListShopsViewModel", "$searchText  $selectedTab")
     }

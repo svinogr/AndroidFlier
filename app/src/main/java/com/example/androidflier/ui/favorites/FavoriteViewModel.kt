@@ -9,8 +9,29 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class FavoriteViewModel(context: Application): BaseShopsViewModel(context) {
-
+/*
      fun refreshData() {
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(delayRefresh)
+
+            try {
+                _shops.postValue(localDb.getAllFavoriteShops())
+            } catch (e: Exception) {
+                _message.postValue(e.message)
+                _shops.postValue(listOf())
+            }
+        }
+    }*/
+
+    override fun loadMore(selectedTab: Tab?, searchText: String) {
+
+    }
+
+    override fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
+
+    }
+
+    override fun getData(tab: Tab?, searchText: String) {
         GlobalScope.launch(Dispatchers.IO) {
             delay(delayRefresh)
 
@@ -23,15 +44,7 @@ class FavoriteViewModel(context: Application): BaseShopsViewModel(context) {
         }
     }
 
-    override fun loadMore(selectedTab: Tab?, searchText: String) {
-
-    }
-
-    override fun refreshDataSearch(selectedTab: Tab?, searchText: String) {
-
-    }
-
-    override fun allShops(tab: Tab?, searchText: String) {
-
+    override fun clearData() {
+        TODO("Not yet implemented")
     }
 }

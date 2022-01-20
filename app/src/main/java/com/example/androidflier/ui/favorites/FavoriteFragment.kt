@@ -107,6 +107,6 @@ class FavoriteFragment : Fragment(R.layout.fragment_favorite),
     }
 
     override fun onRefresh() {
-        shops.refreshData()
+        shops.getData(null, "")
     }
 }

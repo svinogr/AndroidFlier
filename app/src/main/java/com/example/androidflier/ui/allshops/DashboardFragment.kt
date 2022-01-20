@@ -19,4 +19,5 @@ class DashboardFragment : BaseLiveDataFragment(R.layout.fragment_dashboard) {
         ).get(TAG, DashboardViewModel::class.java)
     }
 
+    override fun isNeedPermissions(): Boolean = false
 }

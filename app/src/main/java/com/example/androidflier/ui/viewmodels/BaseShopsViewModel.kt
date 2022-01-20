@@ -28,8 +28,8 @@ abstract class BaseShopsViewModel(val context: Application) : ViewModel() {
     private val _tabs = MutableLiveData<List<Tab>>()
     open val tabs: LiveData<List<Tab>> = _tabs
 
-    val _shops = MutableLiveData<List<Shop>>()
-    val shops: LiveData<List<Shop>> = _shops
+    open val _shops = MutableLiveData<List<Shop>>()
+   open val shops: LiveData<List<Shop>> = _shops
 
     final val delayRefresh: Long = 700
 
@@ -80,5 +80,6 @@ abstract class BaseShopsViewModel(val context: Application) : ViewModel() {
 
     abstract fun loadMore(selectedTab: Tab?, searchText: String)
     abstract fun refreshDataSearch(selectedTab: Tab?, searchText: String)
-    abstract fun allShops(tab: Tab?, searchText: String)
+    abstract fun getData(tab: Tab?, searchText: String)
+    abstract fun clearData()
 }
