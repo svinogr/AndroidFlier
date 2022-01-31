@@ -15,5 +15,5 @@ interface ShopRepositoryable {
 
     fun searchShops(query: String): Call<List<Shop>>
 
-    fun getAllNearestShopsWithSearching(location: Location, tab: Tab?, search: String): Call<List<Shop>>
+    fun getAllNearestShopsWithSearching(location: Location, tab: Tab?, search: String, from: String = "0"): Call<List<Shop>>
 }

@@ -58,7 +58,48 @@ class NearestListShopsViewModel(context: Application) : BaseShopsViewModel(conte
         }
     }
 
-    override fun loadMore(selectedTab: Tab?, searchText: String) {
+    @SuppressLint("MissingPermission")
+    override fun loadMore(tab: Tab?, searchText: String) {
+        GlobalScope.launch(Dispatchers.IO) {
+            delay(delayRefresh)
+
+            locationReposable.getLocateClient().lastLocation.addOnCompleteListener { location ->
+
+                val loc = location.result
+                //TODO for testing GPS
+
+                if (loc != null) {
+                    Log.d("loc", loc.latitude.toString())
+                    val from = (_shops.value!!.size).toString()
+
+                    shopRepo.getAllNearestShopsWithSearching(loc, tab, searchText, from)
+                        .enqueue(object : Callback<List<Shop>> {
+                            override fun onFailure(call: Call<List<Shop>>, t: Throwable) {
+                                Log.d("NearestListShopsViewModel", "fail: $t.toString()")
+                                _message.postValue(t.message)
+                                _shops.postValue(listOf())
+                            }
+
+                            override fun onResponse(
+                                call: Call<List<Shop>>,
+                                response: Response<List<Shop>>
+                            ) {
+                                Log.d("NearestListShopsViewModel", "resp: $response.toString()")
+                                if (response.code() != 200) {
+                                    message.postValue(response.message())
+                                    _shops.postValue(mutableListOf())
+                                } else {
+                                    val m = mutableListOf<Shop>()
+                                    m.addAll(response.body()!!)
+                                    if (!m.isEmpty()) {
+                                        _shops.value = (_shops.value)?.plus(m)
+                                    }
+                                }
+                            }
+                        })
+                }
+            }
+        }
 
     }
 

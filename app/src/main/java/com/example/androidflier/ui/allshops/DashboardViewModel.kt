@@ -44,7 +44,10 @@ class DashboardViewModel(context: Application) : BaseShopsViewModel(context) {
 
                             val m = mutableListOf<Shop>()
                             m.addAll(response.body()!!)
-                            _shops.value = (_shops.value)?.plus(m)
+
+                            if (!m.isEmpty()) {
+                                _shops.value = (_shops.value)?.plus(m)
+                            }
                         }
                     }
                 })
