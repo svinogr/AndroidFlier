@@ -250,6 +250,7 @@ abstract class BaseLiveDataFragment(fragmentDashboard: Int) : Fragment(fragmentD
     }
 
     private fun refreshData() {
+        // TODO возможно стоит сделать обновление под каждую вкладку
         selectedTab = null
         shopsViewModel.clearData()
         shopsViewModel.refreshDataSearch(selectedTab, searchText)
